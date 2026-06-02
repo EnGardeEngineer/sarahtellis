@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sarah T. Ellis</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --ink: #0d0c0a;
+    --paper: #f5f2ec;
+    --accent: #c8401a;
+    --muted: #7a7570;
+    --border: #d8d3cb;
+    --card: #efeae0;
+    --mono: 'DM Mono', monospace;
+    --serif: 'DM Serif Display', serif;
+    --sans: 'Syne', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 1.2rem 3rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--paper);
+    backdrop-filter: blur(8px);
+  }
+  .nav-logo { font-family: var(--mono); font-size: 13px; letter-spacing: 0.05em; color: var(--muted); }
+  .nav-links { display: flex; gap: 2rem; list-style: none; }
+  .nav-links a { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--ink); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    padding-top: 72px;
+  }
+  .hero-left {
+    padding: 6rem 3rem 4rem 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    border-right: 1px solid var(--border);
+  }
+  .hero-kicker {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 1.5rem;
+  }
+  .hero-name {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 6vw, 5.5rem);
+    line-height: 1.0;
+    letter-spacing: -0.02em;
+    margin-bottom: 2rem;
+  }
+  .hero-name em { color: var(--accent); font-style: italic; }
+  .hero-desc {
+    font-size: 17px;
+    line-height: 1.75;
+    color: #3a3731;
+    max-width: 480px;
+    margin-bottom: 3rem;
+  }
+  .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 2.5rem; }
+  .tag {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    padding: 6px 14px;
+    border: 1px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+  .hero-cta {
+    display: inline-block;
+    padding: 14px 28px;
+    background: var(--ink);
+    color: var(--paper);
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border: 1px solid var(--ink);
+    transition: all 0.2s;
+    width: fit-content;
+  }
+  .hero-cta:hover { background: var(--accent); border-color: var(--accent); }
+
+  .hero-right {
+    padding: 6rem 3rem 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    border: 1px solid var(--border);
+    background: var(--border);
+    margin-top: auto;
+    margin-bottom: 3rem;
+  }
+  .stat-cell {
+    background: var(--paper);
+    padding: 1.8rem 1.5rem;
+  }
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 2.8rem;
+    line-height: 1;
+    color: var(--accent);
+    margin-bottom: 0.3rem;
+  }
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .hero-quote {
+    font-family: var(--serif);
+    font-style: italic;
+    font-size: 1.25rem;
+    line-height: 1.6;
+    color: #4a4540;
+    border-left: 2px solid var(--accent);
+    padding-left: 1.25rem;
+  }
+
+  /* SECTIONS */
+  section { padding: 6rem 3rem; border-top: 1px solid var(--border); }
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+    margin-bottom: 4rem;
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  /* EXPERIENCE */
+  .exp-list { display: flex; flex-direction: column; gap: 0; }
+  .exp-item {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    padding: 2.5rem 0;
+  }
+  .exp-meta { padding-right: 2rem; }
+  .exp-company {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 0.4rem;
+  }
+  .exp-date {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .exp-content {}
+  .exp-role {
+    font-family: var(--serif);
+    font-size: 1.4rem;
+    margin-bottom: 1rem;
+  }
+  .exp-bullets { list-style: none; padding: 0; }
+  .exp-bullets li {
+    font-size: 15px;
+    line-height: 1.6;
+    color: #3a3731;
+    padding: 0.3rem 0 0.3rem 1.2rem;
+    position: relative;
+  }
+  .exp-bullets li::before {
+    content: '→';
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-size: 13px;
+  }
+  .exp-highlight {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.05em;
+    color: var(--accent);
+    background: rgba(200, 64, 26, 0.08);
+    padding: 2px 8px;
+    display: inline;
+  }
+
+  /* PROJECTS */
+  .proj-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+  }
+  .proj-card {
+    background: var(--paper);
+    padding: 2rem 1.75rem;
+    transition: background 0.2s;
+  }
+  .proj-card:hover { background: var(--card); }
+  .proj-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    margin-bottom: 1rem;
+    letter-spacing: 0.1em;
+  }
+  .proj-name {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.2;
+  }
+  .proj-desc { font-size: 14px; color: #4a4540; line-height: 1.65; margin-bottom: 1.25rem; }
+  .proj-stack {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  /* TWO-COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+
+  /* ATHLETICS */
+  .athletics-hero {
+    background: var(--ink);
+    color: var(--paper);
+    padding: 4rem 3rem;
+    margin-bottom: 4rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+  }
+  .ath-headline {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+  }
+  .ath-headline em { color: var(--accent); font-style: italic; }
+  .ath-stats { display: flex; flex-direction: column; gap: 1.5rem; }
+  .ath-stat { border-left: 2px solid var(--accent); padding-left: 1rem; }
+  .ath-stat-num { font-family: var(--serif); font-size: 2rem; color: var(--paper); }
+  .ath-stat-label { font-family: var(--mono); font-size: 10px; color: rgba(245, 242, 236, 0.5); letter-spacing: 0.12em; text-transform: uppercase; }
+
+  .ath-timeline { display: flex; flex-direction: column; gap: 0; }
+  .ath-event {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 1.5rem;
+    padding: 1.2rem 0;
+    border-top: 1px solid var(--border);
+    align-items: start;
+  }
+  .ath-year { font-family: var(--mono); font-size: 12px; color: var(--accent); padding-top: 2px; }
+  .ath-event-text { font-size: 15px; color: #3a3731; line-height: 1.5; }
+
+  /* COMMUNITY */
+  .comm-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .comm-card { background: var(--paper); padding: 2rem; }
+  .comm-card:hover { background: var(--card); }
+  .comm-icon { font-size: 1.5rem; margin-bottom: 1rem; }
+  .comm-title { font-family: var(--serif); font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .comm-role { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .comm-desc { font-size: 14px; color: #4a4540; line-height: 1.6; }
+
+  /* SKILLS */
+  .skills-block { display: flex; flex-direction: column; gap: 1.5rem; }
+  .skill-row { border-top: 1px solid var(--border); padding-top: 1.25rem; }
+  .skill-cat { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
+  .skill-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .skill-pill {
+    font-family: var(--mono);
+    font-size: 12px;
+    padding: 5px 12px;
+    border: 1px solid var(--border);
+    color: var(--ink);
+    background: transparent;
+  }
+  .skill-pill.hot { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+  /* AWARDS */
+  .awards-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .award-item { background: var(--paper); padding: 1.5rem; }
+  .award-name { font-size: 15px; font-weight: 600; margin-bottom: 0.3rem; }
+  .award-context { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 4rem 3rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    align-items: end;
+  }
+  .footer-cta-head {
+    font-family: var(--serif);
+    font-size: clamp(1.8rem, 3vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 1.5rem;
+  }
+  .footer-cta-head em { color: var(--accent); font-style: italic; }
+  .footer-links { display: flex; flex-direction: column; gap: 1rem; align-items: flex-end; }
+  .footer-link {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+  .footer-link:hover { color: var(--accent); }
+  .footer-copy {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    margin-top: 2rem;
+  }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .hero, .two-col, .athletics-hero { grid-template-columns: 1fr; }
+    .hero-left { border-right: none; border-bottom: 1px solid var(--border); }
+    .exp-item { grid-template-columns: 1fr; }
+    .proj-grid, .awards-list, .comm-grid { grid-template-columns: 1fr; }
+    section { padding: 4rem 1.5rem; }
+    footer { grid-template-columns: 1fr; }
+    .footer-links { align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="nav-logo">sarah t. ellis · portfolio</span>
+  <ul class="nav-links">
+    <li><a href="#engineering">Engineering</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#athletics">Athletics</a></li>
+    <li><a href="#community">Community</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-left">
+    <p class="hero-kicker">Brooklyn, NY · Open to new roles</p>
+    <h1 class="hero-name">Sarah T.<br><em>Ellis</em></h1>
+    <p class="hero-desc">Data & AI Engineer who builds systems that cut through complexity — at Pfizer, at the UN, and in the streets of Brooklyn where I learned to fence at age 8. I bring the same precision to LangChain agents as to épée bouts.</p>
+    <div class="hero-tags">
+      <span class="tag">LLM Systems</span>
+      <span class="tag">RAG Pipelines</span>
+      <span class="tag">Agentic AI</span>
+      <span class="tag">D1 Fencing Captain</span>
+      <span class="tag">Community Builder</span>
+      <span class="tag">Google AI Scholar</span>
+    </div>
+    <a href="mailto:sarahtellis.ai@gmail.com" class="hero-cta">Get in touch →</a>
+  </div>
+
+  <div class="hero-right">
+    <blockquote class="hero-quote">
+      "I've been competing since I was 8. First with a foil at the Peter Westbrook Foundation. Then with Python and LangChain in production systems at the UN and Pfizer. The discipline is the same."
+    </blockquote>
+    <div class="stat-grid">
+      <div class="stat-cell">
+        <div class="stat-num">62%</div>
+        <div class="stat-label">Analyst throughput increase (WIT/UN)</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">3.9</div>
+        <div class="stat-label">Major GPA · Summa Cum Laude</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">4yr</div>
+        <div class="stat-label">NCAA D1 Épée Captain, LIU</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">400+</div>
+        <div class="stat-label">Community service hours</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ENGINEERING / EXPERIENCE -->
+<section id="engineering">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Engineering</h2>
+  </div>
+
+  <div class="exp-list">
+    <div class="exp-item">
+      <div class="exp-meta">
+        <p class="exp-company">World Information Transfer</p>
+        <p class="exp-date" style="margin-top:4px;font-size:11px;">UN-Affiliated NGO</p>
+        <p class="exp-date">Aug 2025 – Mar 2026</p>
+      </div>
+      <div class="exp-content">
+        <h3 class="exp-role">Data & AI Engineer</h3>
+        <ul class="exp-bullets">
+          <li>Increased analyst throughput by <span class="exp-highlight">62%</span> with a GPT-4-powered agentic NLP pipeline auto-extracting policy signals across 8 domains from 100+ UNESCO/UNGA documents</li>
+          <li>Built a RAG chatbot (LangChain + Pinecone) cutting research time by <span class="exp-highlight">~40%</span> across a 10-person team via sub-second semantic retrieval</li>
+          <li>Deployed LangChain-orchestrated LLM classification system reducing per-document tagging from hours to minutes across climate, education, and global health workstreams</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-meta">
+        <p class="exp-company">Pfizer</p>
+        <p class="exp-date" style="margin-top:4px;font-size:11px;">Global Regulatory Sciences</p>
+        <p class="exp-date">Jun – Sep 2024</p>
+      </div>
+      <div class="exp-content">
+        <h3 class="exp-role">Data Analytics & AI Regulatory Intern</h3>
+        <ul class="exp-bullets">
+          <li>Reduced manual FDA submission processing by <span class="exp-highlight">40%</span> by automating validation in Python, Pandas, and VBA</li>
+          <li>Led team of 10 to map AI governance frameworks across 6 continents; delivered findings as Power BI dashboard to senior stakeholders</li>
+          <li>Designed gamified eLearning prototype for AI-driven processes — trained 500+ employees; briefed 15+ executives on AI policy strategy</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-meta">
+        <p class="exp-company">John Ellis Architect Inc.</p>
+        <p class="exp-date" style="margin-top:4px;font-size:11px;">Real Estate / Architecture</p>
+        <p class="exp-date">Sep 2023 – Present</p>
+      </div>
+      <div class="exp-content">
+        <h3 class="exp-role">AI Automation & Data Systems Developer</h3>
+        <ul class="exp-bullets">
+          <li>Built <strong>ViolationIQ</strong> — agentic Python tool over live NYC Open Data (DOB/ECB/HPD) to classify and prioritize building violations; reduced review time <span class="exp-highlight">~60%</span>, identifies high-risk assets in under 2 min</li>
+          <li>Designed structured data pipeline for 12-unit portfolio, improving retrieval speed ~50% and supporting active regulatory matters</li>
+          <li>Streamlined firm operations with Microsoft 365 + SharePoint, cutting issue resolution from 3+ hours to under 45 minutes</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="exp-item">
+      <div class="exp-meta">
+        <p class="exp-company">Cornell Tech</p>
+        <p class="exp-date" style="margin-top:4px;font-size:11px;">Breakthrough Tech Program</p>
+        <p class="exp-date">Jan – Jul 2021</p>
+      </div>
+      <div class="exp-content">
+        <h3 class="exp-role">AI / Machine Learning Fellow</h3>
+        <ul class="exp-bullets">
+          <li>Built multi-model evaluation framework (scikit-learn + TensorFlow) accelerating model selection by <span class="exp-highlight">30%</span></li>
+          <li>Achieved 80–85% accuracy on held-out test sets; cleaned and ran NLP sentiment analysis on 7,000+ Airbnb listings</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">Projects</h2>
+  </div>
+
+  <div class="proj-grid">
+    <div class="proj-card">
+      <p class="proj-num">P.01</p>
+      <h3 class="proj-name">ViolationIQ</h3>
+      <p class="proj-desc">Agentic tool scraping live NYC Open Data to classify and prioritize building violations by severity and cost exposure. Surfaces high-risk properties in under 2 minutes.</p>
+      <p class="proj-stack">Python · RAG · NYC Open Data · LangChain</p>
+    </div>
+    <div class="proj-card">
+      <p class="proj-num">P.02</p>
+      <h3 class="proj-name">RAG Policy Intelligence Chatbot</h3>
+      <p class="proj-desc">Internal semantic retrieval system over UNESCO/UNGA documents. Replaced hours of manual research with sub-second contextual query responses for a UN analyst team.</p>
+      <p class="proj-stack">LangChain · OpenAI Embeddings · Pinecone</p>
+    </div>
+    <div class="proj-card">
+      <p class="proj-num">P.03</p>
+      <h3 class="proj-name">Climate Anomaly Predictor</h3>
+      <p class="proj-desc">ML model trained on 8M+ data points to predict climate anomalies. Visualized city-level forecasts to inform urban heat island policy research.</p>
+      <p class="proj-stack">Python · TensorFlow · Pandas · Matplotlib</p>
+    </div>
+    <div class="proj-card">
+      <p class="proj-num">P.04</p>
+      <h3 class="proj-name">Fencers Club NYC Site Redesign</h3>
+      <p class="proj-desc">Led full product lifecycle for a 140-year-old nonprofit. 7-page responsive full-stack site with CI/CD pipeline, HTTPS, and cloud deployment on Render.</p>
+      <p class="proj-stack">Django · Tailwind CSS · SQLite · Render</p>
+    </div>
+    <div class="proj-card">
+      <p class="proj-num">P.05</p>
+      <h3 class="proj-name">Inventory Management System</h3>
+      <p class="proj-desc">Full-stack GUI app with transaction tracking, sales analytics, user login, and security testing. Built and validated via Pytest/Bandit.</p>
+      <p class="proj-stack">Python · Kivy · SQLite</p>
+    </div>
+    <div class="proj-card">
+      <p class="proj-num">P.06</p>
+      <h3 class="proj-name">Airbnb NLP Earnings Analysis</h3>
+      <p class="proj-desc">Cleaned 7,000+ listings; applied NLP sentiment analysis to identify language patterns statistically correlated with higher host earnings across market segments.</p>
+      <p class="proj-stack">Python · Pandas · scikit-learn · NLP</p>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section>
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">Technical Skills</h2>
+  </div>
+
+  <div class="two-col">
+    <div class="skills-block">
+      <div class="skill-row">
+        <p class="skill-cat">AI / ML (core)</p>
+        <div class="skill-pills">
+          <span class="skill-pill hot">LangChain</span>
+          <span class="skill-pill hot">RAG Pipelines</span>
+          <span class="skill-pill hot">GPT-4 API</span>
+          <span class="skill-pill hot">Claude API</span>
+          <span class="skill-pill hot">LLM Integration</span>
+          <span class="skill-pill">Pinecone</span>
+          <span class="skill-pill">NLP Pipelines</span>
+          <span class="skill-pill">scikit-learn</span>
+          <span class="skill-pill">TensorFlow</span>
+        </div>
+      </div>
+      <div class="skill-row">
+        <p class="skill-cat">Languages</p>
+        <div class="skill-pills">
+          <span class="skill-pill hot">Python</span>
+          <span class="skill-pill hot">SQL</span>
+          <span class="skill-pill">JavaScript</span>
+          <span class="skill-pill">Java</span>
+          <span class="skill-pill">R</span>
+          <span class="skill-pill">C++</span>
+          <span class="skill-pill">VBA</span>
+        </div>
+      </div>
+      <div class="skill-row">
+        <p class="skill-cat">Data & Cloud</p>
+        <div class="skill-pills">
+          <span class="skill-pill">PostgreSQL</span>
+          <span class="skill-pill">MongoDB</span>
+          <span class="skill-pill">AWS</span>
+          <span class="skill-pill">Azure</span>
+          <span class="skill-pill">REST APIs</span>
+          <span class="skill-pill">Git</span>
+          <span class="skill-pill">Docker</span>
+        </div>
+      </div>
+    </div>
+    <div class="skills-block">
+      <div class="skill-row">
+        <p class="skill-cat">BI & Visualization</p>
+        <div class="skill-pills">
+          <span class="skill-pill hot">Power BI</span>
+          <span class="skill-pill">Tableau</span>
+          <span class="skill-pill">Streamlit</span>
+          <span class="skill-pill">Matplotlib</span>
+          <span class="skill-pill">Seaborn</span>
+          <span class="skill-pill">Plotly</span>
+        </div>
+      </div>
+      <div class="skill-row">
+        <p class="skill-cat">Web & Full-Stack</p>
+        <div class="skill-pills">
+          <span class="skill-pill">Django</span>
+          <span class="skill-pill">Tailwind CSS</span>
+          <span class="skill-pill">HTML/CSS</span>
+          <span class="skill-pill">SQLite</span>
+        </div>
+      </div>
+      <div class="skill-row">
+        <p class="skill-cat">Spoken Languages</p>
+        <div class="skill-pills">
+          <span class="skill-pill hot">English (Native)</span>
+          <span class="skill-pill">French (Fluent)</span>
+          <span class="skill-pill">Spanish (Intermediate)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ATHLETICS -->
+<section id="athletics" style="padding-bottom: 2rem;">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">Athletics</h2>
+  </div>
+
+  <div class="athletics-hero">
+    <div>
+      <h3 class="ath-headline">NCAA D1 Fencing<br><em>Captain.</em><br>4 Years.</h3>
+    </div>
+    <div class="ath-stats">
+      <div class="ath-stat">
+        <div class="ath-stat-num">Age 8</div>
+        <div class="ath-stat-label">Started at Peter Westbrook Foundation</div>
+      </div>
+      <div class="ath-stat">
+        <div class="ath-stat-num">2021–25</div>
+        <div class="ath-stat-label">D1 Épée Varsity, LIU Brooklyn</div>
+      </div>
+      <div class="ath-stat">
+        <div class="ath-stat-num">2022–</div>
+        <div class="ath-stat-label">Professional Fencer</div>
+      </div>
+      <div class="ath-stat">
+        <div class="ath-stat-num">3rd</div>
+        <div class="ath-stat-label">USATF Indoor Nationals, 3000m Racewalk</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ath-timeline">
+    <div class="ath-event">
+      <span class="ath-year">2003</span>
+      <span class="ath-event-text">Born in Brooklyn, NY</span>
+    </div>
+    <div class="ath-event">
+      <span class="ath-year">~2011</span>
+      <span class="ath-event-text">Started fencing at age 8, Peter Westbrook Foundation · Trained in foil under coaches Nzinga Prescod and Iman Blow</span>
+    </div>
+    <div class="ath-event">
+      <span class="ath-year">2018–19</span>
+      <span class="ath-event-text">PSAL Épée Championships — 2nd place individual (2019), 4th place (2018) · Competed in cross country nationals and placed 3rd at USATF Indoor Nationals (3000m racewalk)</span>
+    </div>
+    <div class="ath-event">
+      <span class="ath-year">2021</span>
+      <span class="ath-event-text">Graduated Midwood High School (Medical Sciences Program, Advanced Regents, Honor Roll) · Joined LIU D1 Women's Fencing</span>
+    </div>
+    <div class="ath-event">
+      <span class="ath-year">2021–22</span>
+      <span class="ath-event-text">USFA All-Academic Team · NCAA D1 Épée Varsity Starter</span>
+    </div>
+    <div class="ath-event">
+      <span class="ath-year">2022–23</span>
+      <span class="ath-event-text">Winter Academic Honor Roll · Named Épée Captain · Began professional fencing</span>
+    </div>
+    <div class="ath-event">
+      <span class="ath-year">2025</span>
+      <span class="ath-event-text">Graduated Summa Cum Laude · Completed 4 years as D1 captain · Continues competing professionally</span>
+    </div>
+  </div>
+</section>
+
+<!-- COMMUNITY -->
+<section id="community">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2 class="section-title">Community</h2>
+  </div>
+
+  <div class="comm-grid">
+    <div class="comm-card">
+      <div class="comm-icon">⚔️</div>
+      <h3 class="comm-title">Atlas Lions Fencing</h3>
+      <p class="comm-role">Founder</p>
+      <p class="comm-desc">Built to expand access to fencing for underrepresented communities — rooted in the same foundation that launched Sarah's own journey at age 8.</p>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">💻</div>
+      <h3 class="comm-title">Hack Your Path</h3>
+      <p class="comm-role">Founder</p>
+      <p class="comm-desc">Tech access and career development initiative for underrepresented students entering engineering and data fields.</p>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">👩‍💻</div>
+      <h3 class="comm-title">Girls Who Code</h3>
+      <p class="comm-role">College Loop Leader</p>
+      <p class="comm-desc">Led a college chapter mentoring the next generation of women in technology throughout undergrad.</p>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">🏛️</div>
+      <h3 class="comm-title">Model UN — NYHQ</h3>
+      <p class="comm-role">Delegate (Armenia, GA2) · Top 3 Position Paper + Top Delegation</p>
+      <p class="comm-desc">Represented Armenia at the General Assembly 2 committee in New York HQ. Earned top honors for position paper and delegation performance.</p>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">🤝</div>
+      <h3 class="comm-title">Peter Westbrook Foundation</h3>
+      <p class="comm-role">Volunteer Coach & Mentor</p>
+      <p class="comm-desc">Giving back to the foundation that gave her a foil at age 8. Active volunteer, coach, and mentor for youth fencers in New York City.</p>
+    </div>
+    <div class="comm-card">
+      <div class="comm-icon">🎓</div>
+      <h3 class="comm-title">Student Government + NEC SAAC</h3>
+      <p class="comm-role">Exec Secretary (2022–25) · VP (2023–25)</p>
+      <p class="comm-desc">Three years of elected service in LIU student government and as NEC Student-Athlete Advisory Committee VP, advocating for student and athlete interests.</p>
+    </div>
+  </div>
+</section>
+
+<!-- AWARDS -->
+<section>
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2 class="section-title">Recognition</h2>
+  </div>
+
+  <div class="awards-list">
+    <div class="award-item">
+      <p class="award-name">Google AI/ML & Data Engineering Scholar</p>
+      <p class="award-context">Competitive scholarship · AI/ML focus</p>
+    </div>
+    <div class="award-item">
+      <p class="award-name">Harvard WeCode</p>
+      <p class="award-context">4x participant · 2022–2025</p>
+    </div>
+    <div class="award-item">
+      <p class="award-name">Summa Cum Laude</p>
+      <p class="award-context">Long Island University · GPA 3.9</p>
+    </div>
+    <div class="award-item">
+      <p class="award-name">Dean's List ×7</p>
+      <p class="award-context">7 consecutive semesters</p>
+    </div>
+    <div class="award-item">
+      <p class="award-name">USFA All-Academic Team</p>
+      <p class="award-context">NCAA D1 Fencing · 2021–22</p>
+    </div>
+    <div class="award-item">
+      <p class="award-name">Model UN Top Delegation</p>
+      <p class="award-context">Top 3 Position Paper + Top Delegation · NYHQ</p>
+    </div>
+    <div class="award-item">
+      <p class="award-name">USATF Indoor Nationals · 3rd Place</p>
+      <p class="award-context">3000m Racewalk</p>
+    </div>
+    <div class="award-item">
+      <p class="award-name">PSAL Championships · 2nd Place</p>
+      <p class="award-context">Épée Individual · 2018–19</p>
+    </div>
+    <div class="award-item">
+      <p class="award-name">Community Service Award</p>
+      <p class="award-context">400+ hours logged · Midwood High School</p>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER / CONTACT -->
+<footer id="contact">
+  <div>
+    <h2 class="footer-cta-head">Let's build<br>something <em>real.</em></h2>
+    <p style="font-size:15px; color:#4a4540; max-width:380px; line-height:1.7;">Open to Data & AI Engineering roles. If you're working on something that matters — policy, health, equity, infrastructure — I want to hear about it.</p>
+    <p class="footer-copy">© 2026 Sarah T. Ellis · Brooklyn, NY</p>
+  </div>
+  <div class="footer-links">
+    <a class="footer-link" href="mailto:sarahtellis.ai@gmail.com">sarahtellis.ai@gmail.com</a>
+    <a class="footer-link" href="https://linkedin.com/in/sarahtellis" target="_blank">linkedin.com/in/sarahtellis</a>
+    <a class="footer-link" href="tel:+16468535084">+1 (646) 853-5084</a>
+    <a class="footer-link" href="#">Brooklyn, New York</a>
+  </div>
+</footer>
+
+</body>
+</html>
