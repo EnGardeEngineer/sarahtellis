@@ -1,507 +1,502 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Sarah T. Ellis</title>
+<title>Sarah T. Ellis — Data & AI Engineer</title>
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
-  :root {
-    --ink: #0d0c0a;
-    --paper: #f5f2ec;
-    --accent: #c8401a;
-    --muted: #7a7570;
-    --border: #d8d3cb;
-    --card: #efeae0;
-    --mono: 'DM Mono', monospace;
-    --serif: 'DM Serif Display', serif;
-    --sans: 'Syne', sans-serif;
-  }
+/* ── THEME TOKENS ── */
+[data-theme="light"]{
+  --ink:#0d0c0a;--paper:#f5f2ec;--accent:#c8401a;--accent2:#1a6bc8;
+  --muted:#7a7570;--border:#d8d3cb;--card:#efeae0;--card2:#e8e3d8;
+  --nav-bg:rgba(245,242,236,0.92);--term-bg:#1a1916;--term-text:#e8e3d8;
+  --shadow:rgba(13,12,10,0.08);
+}
+[data-theme="dark"]{
+  --ink:#f0ece3;--paper:#0f0e0c;--accent:#e05522;--accent2:#4a9de8;
+  --muted:#6b6660;--border:#2a2825;--card:#1a1916;--card2:#222018;
+  --nav-bg:rgba(15,14,12,0.92);--term-bg:#0a0908;--term-text:#c8c3b8;
+  --shadow:rgba(0,0,0,0.4);
+}
 
-  html { scroll-behavior: smooth; }
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'Syne',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;transition:background 0.4s,color 0.4s}
 
-  body {
-    background: var(--paper);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 16px;
-    line-height: 1.6;
-    overflow-x: hidden;
-  }
+/* ── CURSOR TRAIL ── */
+.cursor-dot{position:fixed;width:8px;height:8px;background:var(--accent);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform 0.1s;mix-blend-mode:multiply}
+.cursor-ring{position:fixed;width:32px;height:32px;border:1.5px solid var(--accent);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:left 0.12s ease,top 0.12s ease;opacity:0.5}
 
-  /* NAV */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 1.2rem 3rem;
-    border-bottom: 1px solid var(--border);
-    background: var(--paper);
-    backdrop-filter: blur(8px);
-  }
-  .nav-logo { font-family: var(--mono); font-size: 13px; letter-spacing: 0.05em; color: var(--muted); }
-  .nav-links { display: flex; gap: 2rem; list-style: none; }
-  .nav-links a { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); text-decoration: none; transition: color 0.2s; }
-  .nav-links a:hover { color: var(--ink); }
+/* ── PROGRESS BAR ── */
+#scroll-progress{position:fixed;right:0;top:0;bottom:0;width:3px;z-index:200;background:var(--border)}
+#scroll-fill{width:100%;height:0%;background:var(--accent);transition:height 0.1s linear}
 
-  /* HERO */
-  .hero {
-    min-height: 100vh;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding-top: 72px;
-  }
-  .hero-left {
-    padding: 6rem 3rem 4rem 3rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    border-right: 1px solid var(--border);
-  }
-  .hero-kicker {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 1.5rem;
-  }
-  .hero-name {
-    font-family: var(--serif);
-    font-size: clamp(3rem, 6vw, 5.5rem);
-    line-height: 1.0;
-    letter-spacing: -0.02em;
-    margin-bottom: 2rem;
-  }
-  .hero-name em { color: var(--accent); font-style: italic; }
-  .hero-desc {
-    font-size: 17px;
-    line-height: 1.75;
-    color: #3a3731;
-    max-width: 480px;
-    margin-bottom: 3rem;
-  }
-  .hero-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 2.5rem; }
-  .tag {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    padding: 6px 14px;
-    border: 1px solid var(--border);
-    background: transparent;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-  .hero-cta {
-    display: inline-block;
-    padding: 14px 28px;
-    background: var(--ink);
-    color: var(--paper);
-    font-family: var(--mono);
-    font-size: 12px;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    text-decoration: none;
-    border: 1px solid var(--ink);
-    transition: all 0.2s;
-    width: fit-content;
-  }
-  .hero-cta:hover { background: var(--accent); border-color: var(--accent); }
+/* ── SCROLL REVEAL ── */
+.reveal{opacity:0;transform:translateY(28px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal.visible{opacity:1;transform:none}
+.reveal-left{opacity:0;transform:translateX(-30px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal-left.visible{opacity:1;transform:none}
+.reveal-right{opacity:0;transform:translateX(30px);transition:opacity 0.65s ease,transform 0.65s ease}
+.reveal-right.visible{opacity:1;transform:none}
 
-  .hero-right {
-    padding: 6rem 3rem 4rem;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-  }
-  .stat-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
-    border: 1px solid var(--border);
-    background: var(--border);
-    margin-top: auto;
-    margin-bottom: 3rem;
-  }
-  .stat-cell {
-    background: var(--paper);
-    padding: 1.8rem 1.5rem;
-  }
-  .stat-num {
-    font-family: var(--serif);
-    font-size: 2.8rem;
-    line-height: 1;
-    color: var(--accent);
-    margin-bottom: 0.3rem;
-  }
-  .stat-label {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--muted);
-  }
-  .hero-quote {
-    font-family: var(--serif);
-    font-style: italic;
-    font-size: 1.25rem;
-    line-height: 1.6;
-    color: #4a4540;
-    border-left: 2px solid var(--accent);
-    padding-left: 1.25rem;
-  }
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:1.2rem 3rem;border-bottom:1px solid var(--border);background:var(--nav-bg);backdrop-filter:blur(12px);transition:box-shadow 0.3s,background 0.4s}
+nav.scrolled{box-shadow:0 2px 20px var(--shadow)}
+.nav-logo{font-family:'DM Mono',monospace;font-size:13px;letter-spacing:0.05em;color:var(--muted)}
+.nav-links{display:flex;gap:2rem;list-style:none}
+.nav-links a{font-size:12px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.nav-links a:hover,.nav-links a.active{color:var(--accent)}
+.nav-right{display:flex;align-items:center;gap:1.5rem}
+.nav-status{display:flex;align-items:center;gap:8px;font-family:'DM Mono',monospace;font-size:11px;color:#2d7a4f}
+.status-dot{width:7px;height:7px;border-radius:50%;background:#2d7a4f;animation:pulse-dot 2s infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}
+.dark-toggle{background:none;border:1px solid var(--border);color:var(--muted);padding:6px 12px;font-family:'DM Mono',monospace;font-size:11px;cursor:pointer;letter-spacing:0.08em;transition:all 0.2s}
+.dark-toggle:hover{border-color:var(--ink);color:var(--ink)}
+.nav-resume{background:var(--ink);color:var(--paper);border:none;padding:8px 16px;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;text-decoration:none;transition:background 0.2s}
+.nav-resume:hover{background:var(--accent)}
 
-  /* SECTIONS */
-  section { padding: 6rem 3rem; border-top: 1px solid var(--border); }
-  .section-header {
-    display: flex;
-    align-items: baseline;
-    gap: 1.5rem;
-    margin-bottom: 4rem;
-  }
-  .section-num {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-  }
-  .section-title {
-    font-family: var(--serif);
-    font-size: clamp(1.8rem, 3vw, 2.8rem);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-  }
+/* ── NOW STRIP ── */
+.now-strip{background:var(--accent);color:var(--paper);padding:0.6rem 3rem;font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;display:flex;align-items:center;gap:1rem;overflow:hidden;white-space:nowrap}
+.now-strip span{opacity:0.7;margin:0 1rem}
 
-  /* EXPERIENCE */
-  .exp-list { display: flex; flex-direction: column; gap: 0; }
-  .exp-item {
-    display: grid;
-    grid-template-columns: 220px 1fr;
-    gap: 0;
-    border-top: 1px solid var(--border);
-    padding: 2.5rem 0;
-  }
-  .exp-meta { padding-right: 2rem; }
-  .exp-company {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--accent);
-    margin-bottom: 0.4rem;
-  }
-  .exp-date {
-    font-family: var(--mono);
-    font-size: 11px;
-    color: var(--muted);
-  }
-  .exp-content {}
-  .exp-role {
-    font-family: var(--serif);
-    font-size: 1.4rem;
-    margin-bottom: 1rem;
-  }
-  .exp-bullets { list-style: none; padding: 0; }
-  .exp-bullets li {
-    font-size: 15px;
-    line-height: 1.6;
-    color: #3a3731;
-    padding: 0.3rem 0 0.3rem 1.2rem;
-    position: relative;
-  }
-  .exp-bullets li::before {
-    content: '→';
-    position: absolute;
-    left: 0;
-    color: var(--accent);
-    font-size: 13px;
-  }
-  .exp-highlight {
-    font-family: var(--mono);
-    font-size: 11px;
-    letter-spacing: 0.05em;
-    color: var(--accent);
-    background: rgba(200, 64, 26, 0.08);
-    padding: 2px 8px;
-    display: inline;
-  }
+/* ── HERO ── */
+.hero{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;padding-top:calc(72px + 36px)}
+.hero-left{padding:5rem 3rem 4rem;display:flex;flex-direction:column;justify-content:center;border-right:1px solid var(--border)}
+.hero-kicker{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1.5rem}
+.hero-name{font-family:'DM Serif Display',serif;font-size:clamp(3rem,6vw,5.5rem);line-height:1.0;letter-spacing:-0.02em;margin-bottom:0.75rem}
+.hero-name em{color:var(--accent);font-style:italic}
+.hero-typer{font-family:'DM Mono',monospace;font-size:15px;color:var(--muted);margin-bottom:2rem;min-height:1.6rem}
+.cursor-blink{display:inline-block;width:2px;height:1em;background:var(--accent);vertical-align:middle;animation:blink 1s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+.hero-desc{font-size:17px;line-height:1.75;color:var(--muted);max-width:480px;margin-bottom:2.5rem}
+.hero-tags{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:2.5rem}
+.tag{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;padding:6px 14px;border:1px solid var(--border);background:transparent;color:var(--muted);text-transform:uppercase;transition:all 0.2s;cursor:default}
+.tag:hover{border-color:var(--accent);color:var(--accent)}
+.hero-btns{display:flex;gap:1rem;flex-wrap:wrap}
+.btn-primary{display:inline-block;padding:14px 28px;background:var(--ink);color:var(--paper);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;border:1px solid var(--ink);transition:all 0.2s}
+.btn-primary:hover{background:var(--accent);border-color:var(--accent)}
+.btn-ghost{display:inline-block;padding:14px 28px;background:transparent;color:var(--ink);font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;text-decoration:none;border:1px solid var(--border);transition:all 0.2s}
+.btn-ghost:hover{border-color:var(--ink)}
 
-  /* PROJECTS */
-  .proj-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--border);
-    border: 1px solid var(--border);
-  }
-  .proj-card {
-    background: var(--paper);
-    padding: 2rem 1.75rem;
-    transition: background 0.2s;
-  }
-  .proj-card:hover { background: var(--card); }
-  .proj-num {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--muted);
-    margin-bottom: 1rem;
-    letter-spacing: 0.1em;
-  }
-  .proj-name {
-    font-family: var(--serif);
-    font-size: 1.3rem;
-    margin-bottom: 0.75rem;
-    line-height: 1.2;
-  }
-  .proj-desc { font-size: 14px; color: #4a4540; line-height: 1.65; margin-bottom: 1.25rem; }
-  .proj-stack {
-    font-family: var(--mono);
-    font-size: 10px;
-    letter-spacing: 0.08em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
+/* ── HERO RIGHT ── */
+.hero-right{padding:5rem 3rem 4rem;display:flex;flex-direction:column;justify-content:space-between;gap:2rem}
+.hero-photo-frame{width:100%;aspect-ratio:4/3;background:var(--card);border:1px solid var(--border);overflow:hidden;position:relative}
+.hero-photo-frame img{width:100%;height:100%;object-fit:cover;display:block}
+.hero-photo-placeholder{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;text-align:center;padding:2rem}
+.hero-photo-placeholder .ph-icon{font-size:3rem;margin-bottom:8px}
+.photo-caption{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-top:8px;padding:6px 0;border-top:1px solid var(--border)}
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;border:1px solid var(--border);background:var(--border)}
+.stat-cell{background:var(--paper);padding:1.5rem;transition:background 0.2s}
+.stat-cell:hover{background:var(--card)}
+.stat-num{font-family:'DM Serif Display',serif;font-size:2.4rem;line-height:1;color:var(--accent);margin-bottom:0.3rem}
+.stat-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted)}
 
-  /* TWO-COL */
-  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; }
+/* ── MARQUEE ── */
+.marquee-wrap{overflow:hidden;padding:0.9rem 0;background:var(--ink);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+.marquee-track{display:flex;white-space:nowrap;animation:marquee 32s linear infinite}
+.marquee-track:hover{animation-play-state:paused}
+.marquee-item{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.15em;text-transform:uppercase;color:rgba(245,242,236,0.45);padding:0 2.5rem}
+.marquee-item b{color:var(--accent)}
+@keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
-  /* ATHLETICS */
-  .athletics-hero {
-    background: var(--ink);
-    color: var(--paper);
-    padding: 4rem 3rem;
-    margin-bottom: 4rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    align-items: center;
-  }
-  .ath-headline {
-    font-family: var(--serif);
-    font-size: clamp(2rem, 4vw, 3.5rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-  }
-  .ath-headline em { color: var(--accent); font-style: italic; }
-  .ath-stats { display: flex; flex-direction: column; gap: 1.5rem; }
-  .ath-stat { border-left: 2px solid var(--accent); padding-left: 1rem; }
-  .ath-stat-num { font-family: var(--serif); font-size: 2rem; color: var(--paper); }
-  .ath-stat-label { font-family: var(--mono); font-size: 10px; color: rgba(245, 242, 236, 0.5); letter-spacing: 0.12em; text-transform: uppercase; }
+/* ── LOGO ROW ── */
+.logo-row{padding:2.5rem 3rem;border-top:1px solid var(--border);display:flex;align-items:center;gap:0}
+.logo-row-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);white-space:nowrap;margin-right:3rem;flex-shrink:0}
+.logo-items{display:flex;align-items:center;gap:0;flex:1;flex-wrap:wrap}
+.logo-chip{font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.08em;color:var(--muted);padding:10px 24px;border-right:1px solid var(--border);white-space:nowrap;transition:color 0.2s;opacity:0.6}
+.logo-chip:first-child{border-left:1px solid var(--border)}
+.logo-chip:hover{opacity:1;color:var(--ink)}
 
-  .ath-timeline { display: flex; flex-direction: column; gap: 0; }
-  .ath-event {
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    gap: 1.5rem;
-    padding: 1.2rem 0;
-    border-top: 1px solid var(--border);
-    align-items: start;
-  }
-  .ath-year { font-family: var(--mono); font-size: 12px; color: var(--accent); padding-top: 2px; }
-  .ath-event-text { font-size: 15px; color: #3a3731; line-height: 1.5; }
+/* ── SECTIONS ── */
+section{padding:6rem 3rem;border-top:1px solid var(--border)}
+.section-header{display:flex;align-items:baseline;gap:1.5rem;margin-bottom:4rem}
+.section-num{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.1em}
+.section-title{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,3vw,2.8rem);line-height:1.1;letter-spacing:-0.02em}
 
-  /* COMMUNITY */
-  .comm-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
-  .comm-card { background: var(--paper); padding: 2rem; }
-  .comm-card:hover { background: var(--card); }
-  .comm-icon { font-size: 1.5rem; margin-bottom: 1rem; }
-  .comm-title { font-family: var(--serif); font-size: 1.2rem; margin-bottom: 0.5rem; }
-  .comm-role { font-family: var(--mono); font-size: 10px; color: var(--accent); letter-spacing: 0.12em; text-transform: uppercase; margin-bottom: 0.75rem; }
-  .comm-desc { font-size: 14px; color: #4a4540; line-height: 1.6; }
+/* ── FILMSTRIP ── */
+.filmstrip-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;cursor:grab;user-select:none;margin:0 -3rem 4rem;padding:0 3rem;scrollbar-width:none}
+.filmstrip-wrap::-webkit-scrollbar{display:none}
+.filmstrip-wrap.grabbing{cursor:grabbing}
+.filmstrip{display:flex;gap:12px;padding:4px 0 16px}
+.film-frame{flex-shrink:0;width:280px;height:190px;background:var(--card);border:1px solid var(--border);overflow:hidden;position:relative}
+.film-frame img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s}
+.film-frame:hover img{transform:scale(1.05)}
+.film-label{position:absolute;bottom:0;left:0;right:0;padding:8px 12px;background:linear-gradient(transparent,rgba(13,12,10,0.7));font-family:'DM Mono',monospace;font-size:10px;color:rgba(245,242,236,0.85);letter-spacing:0.1em;text-transform:uppercase}
+.film-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase;text-align:center;padding:1rem}
 
-  /* SKILLS */
-  .skills-block { display: flex; flex-direction: column; gap: 1.5rem; }
-  .skill-row { border-top: 1px solid var(--border); padding-top: 1.25rem; }
-  .skill-cat { font-family: var(--mono); font-size: 10px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.75rem; }
-  .skill-pills { display: flex; flex-wrap: wrap; gap: 8px; }
-  .skill-pill {
-    font-family: var(--mono);
-    font-size: 12px;
-    padding: 5px 12px;
-    border: 1px solid var(--border);
-    color: var(--ink);
-    background: transparent;
-  }
-  .skill-pill.hot { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+/* ── EXPERIENCE ── */
+.exp-list{display:flex;flex-direction:column}
+.exp-item{display:grid;grid-template-columns:220px 1fr;border-top:1px solid var(--border);padding:2.5rem 0;transition:background 0.2s}
+.exp-item:hover{background:rgba(200,64,26,0.02)}
+.exp-meta{padding-right:2rem}
+.exp-company{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--accent);margin-bottom:0.4rem}
+.exp-date{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);line-height:1.6}
+.exp-role{font-family:'DM Serif Display',serif;font-size:1.4rem;margin-bottom:1rem}
+.exp-bullets{list-style:none;padding:0}
+.exp-bullets li{font-size:15px;line-height:1.6;color:var(--muted);padding:0.3rem 0 0.3rem 1.2rem;position:relative}
+.exp-bullets li::before{content:'→';position:absolute;left:0;color:var(--accent);font-size:13px}
+.hl{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);background:rgba(200,64,26,0.08);padding:2px 8px}
+.exp-tag{display:inline-block;font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;border:1px solid var(--border);padding:3px 10px;color:var(--muted);margin:6px 4px 0 0;transition:all 0.2s}
+.exp-tag:hover{border-color:var(--accent);color:var(--accent)}
 
-  /* AWARDS */
-  .awards-list { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
-  .award-item { background: var(--paper); padding: 1.5rem; }
-  .award-name { font-size: 15px; font-weight: 600; margin-bottom: 0.3rem; }
-  .award-context { font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 0.08em; }
+/* ── PROJECTS ── */
+.proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}
+.proj-card{background:var(--paper);padding:0;transition:background 0.2s;cursor:default;display:flex;flex-direction:column}
+.proj-card:hover{background:var(--card)}
+.proj-img{height:160px;background:var(--card2);overflow:hidden;border-bottom:1px solid var(--border)}
+.proj-img img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s}
+.proj-card:hover .proj-img img{transform:scale(1.04)}
+.proj-terminal{height:160px;background:var(--term-bg);font-family:'DM Mono',monospace;font-size:11px;color:var(--term-text);padding:16px;overflow:hidden;border-bottom:1px solid var(--border);line-height:1.6}
+.proj-terminal .t-prompt{color:#c8401a}
+.proj-terminal .t-cmd{color:#7ab8f5}
+.proj-terminal .t-out{color:var(--term-text);opacity:0.7}
+.proj-terminal .t-green{color:#5cb85c}
+.proj-body{padding:1.75rem}
+.proj-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:0.75rem;letter-spacing:0.1em}
+.proj-name{font-family:'DM Serif Display',serif;font-size:1.25rem;margin-bottom:0.6rem;line-height:1.2}
+.proj-desc{font-size:14px;color:var(--muted);line-height:1.65;margin-bottom:1rem}
+.proj-stack{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.08em;color:var(--muted);text-transform:uppercase}
 
-  /* FOOTER */
-  footer {
-    border-top: 1px solid var(--border);
-    padding: 4rem 3rem;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 3rem;
-    align-items: end;
-  }
-  .footer-cta-head {
-    font-family: var(--serif);
-    font-size: clamp(1.8rem, 3vw, 3rem);
-    line-height: 1.1;
-    letter-spacing: -0.02em;
-    margin-bottom: 1.5rem;
-  }
-  .footer-cta-head em { color: var(--accent); font-style: italic; }
-  .footer-links { display: flex; flex-direction: column; gap: 1rem; align-items: flex-end; }
-  .footer-link {
-    font-family: var(--mono);
-    font-size: 13px;
-    color: var(--muted);
-    text-decoration: none;
-    letter-spacing: 0.05em;
-    transition: color 0.2s;
-  }
-  .footer-link:hover { color: var(--accent); }
-  .footer-copy {
-    font-family: var(--mono);
-    font-size: 10px;
-    color: var(--muted);
-    letter-spacing: 0.1em;
-    margin-top: 2rem;
-  }
+/* ── TERMINAL SECTION ── */
+.terminal-section{background:var(--term-bg);border:1px solid rgba(200,64,26,0.3);padding:2rem;font-family:'DM Mono',monospace;font-size:13px;color:var(--term-text);line-height:1.8;margin-bottom:4rem;position:relative}
+.terminal-section::before{content:'● ● ●';position:absolute;top:12px;left:16px;font-size:11px;color:rgba(200,64,26,0.6);letter-spacing:6px}
+.terminal-section .term-inner{margin-top:28px}
+.t-prompt{color:#c8401a}
+.t-cmd{color:#7ab8f5}
+.t-string{color:#98c379}
+.t-comment{color:#5c6370;font-style:italic}
+.t-num{color:#d19a66}
+.t-out{color:var(--term-text);opacity:0.8}
+.t-cursor{display:inline-block;width:8px;height:13px;background:#c8401a;vertical-align:middle;animation:blink 1s infinite;margin-left:2px}
 
-  @media (max-width: 900px) {
-    nav { padding: 1rem 1.5rem; }
-    .nav-links { display: none; }
-    .hero, .two-col, .athletics-hero { grid-template-columns: 1fr; }
-    .hero-left { border-right: none; border-bottom: 1px solid var(--border); }
-    .exp-item { grid-template-columns: 1fr; }
-    .proj-grid, .awards-list, .comm-grid { grid-template-columns: 1fr; }
-    section { padding: 4rem 1.5rem; }
-    footer { grid-template-columns: 1fr; }
-    .footer-links { align-items: flex-start; }
-  }
+/* ── SKILLS ── */
+.skills-inner{display:grid;grid-template-columns:1fr 1fr;gap:4rem}
+.skill-group{margin-bottom:2.5rem}
+.skill-group-title{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1.25rem}
+.skill-bar-row{margin-bottom:1rem}
+.skill-bar-label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px;color:var(--ink)}
+.skill-bar-label span:last-child{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)}
+.skill-bar-bg{height:3px;background:var(--border);border-radius:2px;overflow:hidden}
+.skill-bar-fill{height:100%;background:var(--accent);border-radius:2px;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.radar-wrap{display:flex;justify-content:center;align-items:center}
+.skill-pills-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.skill-pill{font-family:'DM Mono',monospace;font-size:11px;padding:5px 12px;border:1px solid var(--border);color:var(--ink);background:transparent;transition:all 0.2s}
+.skill-pill:hover,.skill-pill.hot{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+/* ── ATHLETICS ── */
+.athletics-banner{background:var(--ink);color:var(--paper);padding:4rem 3rem;margin-bottom:4rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:center}
+.ath-headline{font-family:'DM Serif Display',serif;font-size:clamp(2rem,4vw,3.5rem);line-height:1.05;letter-spacing:-0.02em}
+.ath-headline em{color:var(--accent);font-style:italic}
+.ath-stats{display:flex;flex-direction:column;gap:1.5rem}
+.ath-stat{border-left:2px solid var(--accent);padding-left:1rem}
+.ath-stat-num{font-family:'DM Serif Display',serif;font-size:2rem;color:var(--paper)}
+.ath-stat-label{font-family:'DM Mono',monospace;font-size:10px;color:rgba(245,242,236,0.5);letter-spacing:0.12em;text-transform:uppercase}
+.fence-timeline{position:relative;padding-left:2.5rem}
+.fence-timeline::before{content:'';position:absolute;left:0;top:8px;bottom:8px;width:2px;background:linear-gradient(to bottom,var(--accent),var(--border))}
+.fence-event{position:relative;padding-bottom:2.5rem}
+.fence-event:last-child{padding-bottom:0}
+.fence-dot{position:absolute;left:-2.5rem;top:4px;width:12px;height:12px;border-radius:50%;background:var(--paper);border:2px solid var(--accent);transform:translateX(-5px);transition:background 0.2s}
+.fence-event:hover .fence-dot{background:var(--accent)}
+.fence-year{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:0.1em;margin-bottom:0.3rem}
+.fence-title{font-family:'DM Serif Display',serif;font-size:1.15rem;margin-bottom:0.3rem;line-height:1.2}
+.fence-desc{font-size:14px;color:var(--muted);line-height:1.6}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:4rem}
+
+/* ── COMMUNITY ── */
+.comm-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}
+.comm-card{background:var(--paper);padding:2rem;transition:background 0.2s}
+.comm-card:hover{background:var(--card)}
+.comm-badge{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.15em;text-transform:uppercase;color:var(--accent);border:1px solid rgba(200,64,26,0.3);padding:3px 10px;display:inline-block;margin-bottom:0.75rem}
+.comm-title{font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:0.4rem}
+.comm-role{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-bottom:0.75rem}
+.comm-desc{font-size:14px;color:var(--muted);line-height:1.6}
+
+/* ── TESTIMONIAL ── */
+.testimonial-row{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);margin-top:3rem}
+.testimonial{background:var(--paper);padding:2.5rem}
+.testimonial blockquote{font-family:'DM Serif Display',serif;font-style:italic;font-size:1.15rem;line-height:1.65;color:var(--ink);margin-bottom:1.25rem}
+.testimonial cite{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:0.08em}
+
+/* ── AWARDS ── */
+.awards-list{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--border);border:1px solid var(--border)}
+.award-item{background:var(--paper);padding:1.5rem;transition:background 0.2s}
+.award-item:hover{background:var(--card)}
+.award-name{font-size:15px;font-weight:600;margin-bottom:0.3rem;line-height:1.3}
+.award-context{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.08em}
+
+/* ── CONTACT FORM ── */
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
+.form-field{margin-bottom:1.25rem}
+.form-label{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:8px}
+.form-input,.form-textarea{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);padding:10px 0;font-family:'Syne',sans-serif;font-size:15px;color:var(--ink);outline:none;transition:border-color 0.2s}
+.form-input:focus,.form-textarea:focus{border-bottom-color:var(--accent)}
+.form-textarea{resize:none;height:100px;display:block}
+.form-submit{background:var(--ink);color:var(--paper);border:none;padding:14px 32px;font-family:'DM Mono',monospace;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;transition:background 0.2s;width:100%;margin-top:0.5rem}
+.form-submit:hover{background:var(--accent)}
+.form-note{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);margin-top:8px;letter-spacing:0.05em}
+.form-sent{display:none;font-family:'DM Mono',monospace;font-size:13px;color:#2d7a4f;letter-spacing:0.05em;margin-top:1rem}
+
+/* ── FOOTER ── */
+footer{border-top:1px solid var(--border);padding:4rem 3rem;display:grid;grid-template-columns:1fr 1fr;gap:3rem;align-items:end}
+.footer-cta-head{font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,3vw,3rem);line-height:1.1;letter-spacing:-0.02em;margin-bottom:1.5rem}
+.footer-cta-head em{color:var(--accent);font-style:italic}
+.footer-links{display:flex;flex-direction:column;gap:1rem;align-items:flex-end}
+.footer-link{font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);text-decoration:none;letter-spacing:0.05em;transition:color 0.2s}
+.footer-link:hover{color:var(--accent)}
+.footer-copy{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-top:2rem}
+
+/* ── IMG PLACEHOLDER ── */
+.img-ph{background:var(--card);border:1px dashed var(--border);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;text-align:center;padding:2rem}
+
+/* ── RESPONSIVE ── */
+@media(max-width:960px){
+  nav{padding:1rem 1.5rem}
+  .nav-links,.nav-status{display:none}
+  .hero,.two-col,.athletics-banner,.contact-grid,.testimonial-row{grid-template-columns:1fr}
+  .hero-left{border-right:none;border-bottom:1px solid var(--border)}
+  .exp-item{grid-template-columns:1fr}
+  .proj-grid,.awards-list,.comm-grid{grid-template-columns:1fr}
+  section{padding:4rem 1.5rem}
+  footer{grid-template-columns:1fr}
+  .footer-links{align-items:flex-start}
+  .skills-inner{grid-template-columns:1fr}
+  .logo-row{padding:1.5rem;flex-wrap:wrap;gap:0.5rem}
+  .now-strip{padding:0.6rem 1.5rem}
+}
 </style>
 </head>
 <body>
 
-<nav>
-  <span class="nav-logo">sarah t. ellis · portfolio</span>
+<!-- CURSOR -->
+<div class="cursor-dot" id="cdot"></div>
+<div class="cursor-ring" id="cring"></div>
+
+<!-- SCROLL PROGRESS -->
+<div id="scroll-progress"><div id="scroll-fill"></div></div>
+
+<!-- NAV -->
+<nav id="navbar">
+  <span class="nav-logo">sarah t. ellis</span>
   <ul class="nav-links">
-    <li><a href="#engineering">Engineering</a></li>
+    <li><a href="#experience">Experience</a></li>
     <li><a href="#projects">Projects</a></li>
+    <li><a href="#skills">Skills</a></li>
     <li><a href="#athletics">Athletics</a></li>
     <li><a href="#community">Community</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
+  <div class="nav-right">
+    <div class="nav-status"><div class="status-dot"></div>Open to roles</div>
+    <button class="dark-toggle" onclick="toggleDark()" id="theme-btn">◐ Dark</button>
+    <a href="#" class="nav-resume" download>↓ Resume</a>
+  </div>
 </nav>
+
+<!-- NOW STRIP -->
+<div class="now-strip" style="margin-top:64px">
+  <b>Now:</b>
+  <span>✦</span> Open to Data &amp; AI Engineering roles
+  <span>✦</span> Building Atlas Lions Fencing
+  <span>✦</span> Competing professionally in épée
+  <span>✦</span> Brooklyn, New York
+</div>
 
 <!-- HERO -->
 <div class="hero">
   <div class="hero-left">
-    <p class="hero-kicker">Brooklyn, NY · Open to new roles</p>
-    <h1 class="hero-name">Sarah T.<br><em>Ellis</em></h1>
-    <p class="hero-desc">Data & AI Engineer who builds systems that cut through complexity — at Pfizer, at the UN, and in the streets of Brooklyn where I learned to fence at age 8. I bring the same discipline to both fencing and engineering.
-    <div class="hero-tags">
-      <span class="tag">LLM Systems</span>
-      <span class="tag">RAG Pipelines</span>
-      <span class="tag">Agentic AI</span>
-      <span class="tag">D1 Fencing Captain</span>
-      <span class="tag">Community Builder</span>
-      <span class="tag">Google AI Scholar</span>
+    <p class="hero-kicker reveal">Brooklyn, NY · Data &amp; AI Engineer</p>
+    <h1 class="hero-name reveal">Sarah T.<br><em>Ellis</em></h1>
+    <div class="hero-typer reveal"><span id="typed-text"></span><span class="cursor-blink"></span></div>
+    <p class="hero-desc reveal">Building AI systems that cut through complexity — at Pfizer, at the UN, and in the streets of Brooklyn where I learned to fence at age 8. I bring the same precision to LangChain agents as to épée bouts.</p>
+    <div class="hero-tags reveal">
+      <span class="tag">LLM Systems</span><span class="tag">RAG Pipelines</span><span class="tag">Agentic AI</span>
+      <span class="tag">D1 Fencing Captain</span><span class="tag">Community Builder</span><span class="tag">Google AI Scholar</span>
     </div>
-    <a href="mailto:sarahtellis.ai@gmail.com" class="hero-cta">Get in touch →</a>
+    <div class="hero-btns reveal">
+      <a href="#contact" class="btn-primary">Get in touch →</a>
+      <a href="https://linkedin.com/in/sarahtellis" target="_blank" class="btn-ghost">LinkedIn ↗</a>
+    </div>
   </div>
-
   <div class="hero-right">
-    <blockquote class="hero-quote">
-      "I've been competing since I was 8. First with a foil at the Peter Westbrook Foundation. Then with Python and LangChain in production systems at the UN and Pfizer. The discipline is the same."
-    </blockquote>
-    <div class="stat-grid">
-      <div class="stat-cell">
-        <div class="stat-num">62%</div>
-        <div class="stat-label">Analyst throughput increase (WIT/UN)</div>
+    <div class="hero-photo-frame reveal-right">
+      <!-- REPLACE src WITH YOUR PHOTO -->
+      <div class="hero-photo-placeholder">
+        <div class="ph-icon">📸</div>
+        <div>Your photo here</div>
+        <div style="font-size:9px;opacity:0.5;margin-top:4px">Replace this div with:<br>&lt;img src="your-photo.jpg"&gt;</div>
       </div>
-      <div class="stat-cell">
-        <div class="stat-num">3.9</div>
-        <div class="stat-label">Major GPA · Summa Cum Laude</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-num">4yr</div>
-        <div class="stat-label">NCAA D1 Épée Captain, LIU</div>
-      </div>
-      <div class="stat-cell">
-        <div class="stat-num">400+</div>
-        <div class="stat-label">Community service hours</div>
-      </div>
+      <div class="photo-caption">Sarah T. Ellis · Brooklyn, NY</div>
+    </div>
+    <div class="stat-grid reveal">
+      <div class="stat-cell"><div class="stat-num" data-count="62" data-suffix="%">0%</div><div class="stat-label">Analyst throughput · WIT/UN</div></div>
+      <div class="stat-cell"><div class="stat-num" data-count="3.9" data-suffix="" data-decimal="1">0</div><div class="stat-label">Major GPA · Summa Cum Laude</div></div>
+      <div class="stat-cell"><div class="stat-num" data-count="4" data-suffix="yr">0yr</div><div class="stat-label">NCAA D1 Épée Captain</div></div>
+      <div class="stat-cell"><div class="stat-num" data-count="400" data-suffix="+">0+</div><div class="stat-label">Community service hours</div></div>
     </div>
   </div>
 </div>
 
-<!-- ENGINEERING / EXPERIENCE -->
-<section id="engineering">
-  <div class="section-header">
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee-track">
+    <span class="marquee-item"><b>✦</b> Python</span><span class="marquee-item"><b>✦</b> LangChain</span><span class="marquee-item"><b>✦</b> RAG Pipelines</span><span class="marquee-item"><b>✦</b> GPT-4 API</span><span class="marquee-item"><b>✦</b> Claude API</span><span class="marquee-item"><b>✦</b> Pinecone</span><span class="marquee-item"><b>✦</b> Power BI</span><span class="marquee-item"><b>✦</b> NCAA D1 Fencing Captain</span><span class="marquee-item"><b>✦</b> Pfizer · Fortune 500</span><span class="marquee-item"><b>✦</b> UN-Affiliated NGO</span><span class="marquee-item"><b>✦</b> Cornell Tech AI Fellow</span><span class="marquee-item"><b>✦</b> Google AI Scholar</span><span class="marquee-item"><b>✦</b> Harvard WeCode ×4</span><span class="marquee-item"><b>✦</b> Girls Who Code Leader</span><span class="marquee-item"><b>✦</b> US Open Ball Girl</span><span class="marquee-item"><b>✦</b> Summa Cum Laude · 3.9 GPA</span>
+    <span class="marquee-item"><b>✦</b> Python</span><span class="marquee-item"><b>✦</b> LangChain</span><span class="marquee-item"><b>✦</b> RAG Pipelines</span><span class="marquee-item"><b>✦</b> GPT-4 API</span><span class="marquee-item"><b>✦</b> Claude API</span><span class="marquee-item"><b>✦</b> Pinecone</span><span class="marquee-item"><b>✦</b> Power BI</span><span class="marquee-item"><b>✦</b> NCAA D1 Fencing Captain</span><span class="marquee-item"><b>✦</b> Pfizer · Fortune 500</span><span class="marquee-item"><b>✦</b> UN-Affiliated NGO</span><span class="marquee-item"><b>✦</b> Cornell Tech AI Fellow</span><span class="marquee-item"><b>✦</b> Google AI Scholar</span><span class="marquee-item"><b>✦</b> Harvard WeCode ×4</span><span class="marquee-item"><b>✦</b> Girls Who Code Leader</span><span class="marquee-item"><b>✦</b> US Open Ball Girl</span><span class="marquee-item"><b>✦</b> Summa Cum Laude · 3.9 GPA</span>
+  </div>
+</div>
+
+<!-- LOGO ROW -->
+<div class="logo-row reveal">
+  <span class="logo-row-label">As seen at</span>
+  <div class="logo-items">
+    <span class="logo-chip">PFIZER</span>
+    <span class="logo-chip">WORLD INFORMATION TRANSFER</span>
+    <span class="logo-chip">CORNELL TECH</span>
+    <span class="logo-chip">LONG ISLAND UNIVERSITY</span>
+    <span class="logo-chip">ENERGY INNOVATION CAPITAL</span>
+    <span class="logo-chip">GEOTHARA</span>
+    <span class="logo-chip">USTA · US OPEN</span>
+    <span class="logo-chip">PETER WESTBROOK FOUNDATION</span>
+  </div>
+</div>
+
+<!-- EXPERIENCE -->
+<section id="experience">
+  <div class="section-header reveal">
     <span class="section-num">01</span>
-    <h2 class="section-title">Engineering</h2>
+    <h2 class="section-title">Experience</h2>
+  </div>
+
+  <!-- Filmstrip image gallery -->
+  <div class="filmstrip-wrap reveal" id="filmstrip">
+    <div class="filmstrip" id="filmstrip-inner">
+      <div class="film-frame"><div class="film-ph">📸<br>Add photo: WIT / UN work</div><div class="film-label">World Information Transfer · 2025</div></div>
+      <div class="film-frame"><div class="film-ph">📸<br>Add photo: Pfizer internship</div><div class="film-label">Pfizer · Global Regulatory Sciences · 2024</div></div>
+      <div class="film-frame"><div class="film-ph">📸<br>Add photo: Cornell Tech BTT</div><div class="film-label">Cornell Tech AI/ML Fellow · 2021</div></div>
+      <div class="film-frame"><div class="film-ph">📸<br>Add photo: hackathon / coding</div><div class="film-label">Hack Your Path · Community</div></div>
+      <div class="film-frame"><div class="film-ph">📸<br>Add photo: fencing competition</div><div class="film-label">NCAA D1 Fencing · LIU Sharks</div></div>
+      <div class="film-frame"><div class="film-ph">📸<br>Add photo: US Open court</div><div class="film-label">US Open Ball Girl · USTA</div></div>
+      <div class="film-frame"><div class="film-ph">📸<br>Add photo: community / coaching</div><div class="film-label">Atlas Lions Fencing · Founder</div></div>
+    </div>
   </div>
 
   <div class="exp-list">
-    <div class="exp-item">
+    <div class="exp-item reveal">
       <div class="exp-meta">
         <p class="exp-company">World Information Transfer</p>
-        <p class="exp-date" style="margin-top:4px;font-size:11px;">UN-Affiliated NGO</p>
+        <p class="exp-date">UN-Affiliated NGO</p>
         <p class="exp-date">Aug 2025 – Mar 2026</p>
+        <p class="exp-date">New York, NY</p>
       </div>
       <div class="exp-content">
-        <h3 class="exp-role">Data & AI Engineer</h3>
+        <h3 class="exp-role">Data &amp; AI Engineer</h3>
         <ul class="exp-bullets">
-          <li>Increased analyst throughput by <span class="exp-highlight">62%</span> with a GPT-4-powered agentic NLP pipeline auto-extracting policy signals across 8 domains from 100+ UNESCO/UNGA documents</li>
-          <li>Built a RAG chatbot (LangChain + Pinecone) cutting research time by <span class="exp-highlight">~40%</span> across a 10-person team via sub-second semantic retrieval</li>
+          <li>Increased analyst throughput by <span class="hl">62%</span> — GPT-4-powered agentic NLP pipeline auto-extracting policy signals across 8 domains from 100+ UNESCO/UNGA documents</li>
+          <li>Built a RAG chatbot (LangChain + OpenAI Embeddings + Pinecone) cutting research time by <span class="hl">~40%</span> via sub-second semantic retrieval for a 10-person team</li>
           <li>Deployed LangChain-orchestrated LLM classification system reducing per-document tagging from hours to minutes across climate, education, and global health workstreams</li>
+          <li>Standardized Notion and SharePoint workflows enabling synthesis of session notes into the WIT Monthly Policy Journal</li>
         </ul>
+        <div style="margin-top:12px"><span class="exp-tag">LangChain</span><span class="exp-tag">GPT-4</span><span class="exp-tag">Pinecone</span><span class="exp-tag">RAG</span><span class="exp-tag">NLP</span><span class="exp-tag">Agentic AI</span></div>
       </div>
     </div>
-
-    <div class="exp-item">
+    <div class="exp-item reveal">
       <div class="exp-meta">
         <p class="exp-company">Pfizer</p>
-        <p class="exp-date" style="margin-top:4px;font-size:11px;">Global Regulatory Sciences</p>
+        <p class="exp-date">Global Regulatory Sciences</p>
         <p class="exp-date">Jun – Sep 2024</p>
+        <p class="exp-date">New York, NY</p>
       </div>
       <div class="exp-content">
-        <h3 class="exp-role">Data Analytics & AI Regulatory Intern</h3>
+        <h3 class="exp-role">Data Analytics &amp; AI Regulatory Intern</h3>
         <ul class="exp-bullets">
-          <li>Reduced manual FDA submission processing by <span class="exp-highlight">40%</span> by automating validation in Python, Pandas, and VBA</li>
-          <li>Led team of 10 to map AI governance frameworks across 6 continents; delivered findings as Power BI dashboard to senior stakeholders</li>
-          <li>Designed gamified eLearning prototype for AI-driven processes — trained 500+ employees; briefed 15+ executives on AI policy strategy</li>
+          <li>Reduced manual FDA submission processing by <span class="hl">40%</span> automating validation in Python, Pandas, and VBA across globally distributed teams</li>
+          <li>Led team of 10 mapping AI governance frameworks across 6 continents; delivered Power BI dashboard presented to senior stakeholders</li>
+          <li>Designed gamified eLearning prototype — trained <span class="hl">500+</span> employees; briefed <span class="hl">15+</span> executives on AI policy strategy</li>
         </ul>
+        <div style="margin-top:12px"><span class="exp-tag">Python</span><span class="exp-tag">Power BI</span><span class="exp-tag">SQL</span><span class="exp-tag">VBA</span><span class="exp-tag">Pandas</span></div>
       </div>
     </div>
-
-    <div class="exp-item">
+    <div class="exp-item reveal">
       <div class="exp-meta">
         <p class="exp-company">John Ellis Architect Inc.</p>
-        <p class="exp-date" style="margin-top:4px;font-size:11px;">Real Estate / Architecture</p>
+        <p class="exp-date">Architecture &amp; Real Estate</p>
         <p class="exp-date">Sep 2023 – Present</p>
+        <p class="exp-date">Brooklyn, NY</p>
       </div>
       <div class="exp-content">
-        <h3 class="exp-role">AI Automation & Data Systems Developer</h3>
+        <h3 class="exp-role">AI Automation &amp; Data Systems Developer</h3>
         <ul class="exp-bullets">
-          <li>Built <strong>ViolationIQ</strong> — agentic Python tool over live NYC Open Data (DOB/ECB/HPD) to classify and prioritize building violations; reduced review time by 60%</li>
-          <li>Designed structured data pipeline for 12-unit portfolio, improving retrieval speed ~50% and supporting active regulatory matters</li>
-          <li>Streamlined firm operations with Microsoft 365 + SharePoint, cutting issue resolution from 3+ hours to under 45 minutes</li>
+          <li>Built <strong>ViolationIQ</strong> — Python agentic tool over live NYC Open Data classifying violations; reduced review time <span class="hl">~60%</span>, surfaces high-risk assets in under 2 min</li>
+          <li>Designed structured data pipeline for 12-unit portfolio aggregating permits, invoices, and regulatory records — improved retrieval <span class="hl">~50%</span></li>
+          <li>Streamlined firm-wide ops with Microsoft 365 + SharePoint, cutting issue resolution from 3+ hours to under 45 minutes</li>
         </ul>
+        <div style="margin-top:12px"><span class="exp-tag">Python</span><span class="exp-tag">RAG</span><span class="exp-tag">NYC Open Data</span><span class="exp-tag">Excel</span><span class="exp-tag">SharePoint</span></div>
       </div>
     </div>
-
-    <div class="exp-item">
+    <div class="exp-item reveal">
       <div class="exp-meta">
-        <p class="exp-company">Cornell Tech</p>
-        <p class="exp-date" style="margin-top:4px;font-size:11px;">Breakthrough Tech Program</p>
+        <p class="exp-company">GeoThara</p>
+        <p class="exp-date">Climate Tech · BTT Fellow</p>
+        <p class="exp-date">Sep – Dec 2023</p>
+        <p class="exp-date">New York, NY</p>
+      </div>
+      <div class="exp-content">
+        <h3 class="exp-role">Machine Learning Fellow</h3>
+        <ul class="exp-bullets">
+          <li>Developed ML models optimizing riverbed reconstruction for U.S. climate disaster response</li>
+          <li>Applied geospatial preprocessing with Fiona/Shapely to improve model accuracy; integrated ML research into actionable product requirements</li>
+        </ul>
+        <div style="margin-top:12px"><span class="exp-tag">Python</span><span class="exp-tag">ML</span><span class="exp-tag">Fiona/Shapely</span><span class="exp-tag">Geospatial</span></div>
+      </div>
+    </div>
+    <div class="exp-item reveal">
+      <div class="exp-meta">
+        <p class="exp-company">Energy Innovation Capital</p>
+        <p class="exp-date">Venture Capital</p>
+        <p class="exp-date">Sep 2023 – Apr 2024</p>
+        <p class="exp-date">New York, NY</p>
+      </div>
+      <div class="exp-content">
+        <h3 class="exp-role">VC Data Analytics Intern</h3>
+        <ul class="exp-bullets">
+          <li>Built Excel/Power BI scoring model for startup investment decisions; evaluated 50+ startups and flagged <span class="hl">$500K</span> in opportunities</li>
+          <li>Automated Excel workflows cutting reporting time by 20%</li>
+        </ul>
+        <div style="margin-top:12px"><span class="exp-tag">Excel</span><span class="exp-tag">Power BI</span><span class="exp-tag">Market Analysis</span></div>
+      </div>
+    </div>
+    <div class="exp-item reveal">
+      <div class="exp-meta">
+        <p class="exp-company">Cornell Tech University</p>
+        <p class="exp-date">Breakthrough Tech Program</p>
         <p class="exp-date">Jan – Jul 2021</p>
+        <p class="exp-date">New York, NY</p>
       </div>
       <div class="exp-content">
         <h3 class="exp-role">AI / Machine Learning Fellow</h3>
         <ul class="exp-bullets">
-          <li>Built multi-model evaluation framework (scikit-learn + TensorFlow) accelerating model selection by <span class="exp-highlight">30%</span></li>
-          <li>Achieved 80–85% accuracy on held-out test sets; cleaned and ran NLP sentiment analysis on 7,000+ Airbnb listings</li>
+          <li>Built multi-model evaluation framework (scikit-learn + TensorFlow) accelerating model selection by <span class="hl">30%</span></li>
+          <li>Achieved 80–85% accuracy on held-out test sets; ran NLP sentiment analysis on 7,000+ Airbnb listings</li>
         </ul>
+        <div style="margin-top:12px"><span class="exp-tag">scikit-learn</span><span class="exp-tag">TensorFlow</span><span class="exp-tag">NLP</span><span class="exp-tag">Python</span></div>
+      </div>
+    </div>
+    <div class="exp-item reveal">
+      <div class="exp-meta">
+        <p class="exp-company">US Open Tennis · USTA</p>
+        <p class="exp-date">Grand Slam · Flushing, Queens</p>
+        <p class="exp-date">Multi-Year</p>
+        <p class="exp-date">New York, NY</p>
+      </div>
+      <div class="exp-content">
+        <h3 class="exp-role">Ball Girl — Grand Slam</h3>
+        <ul class="exp-bullets">
+          <li>Selected through USTA's competitive tryout at the Billie Jean King National Tennis Center testing agility, speed, and court coordination</li>
+          <li>Served on-court at one of the four Grand Slam tournaments; operated on Arthur Ashe Stadium alongside world-ranked professional players</li>
+        </ul>
+        <div style="margin-top:12px"><span class="exp-tag">Grand Slam</span><span class="exp-tag">USTA</span><span class="exp-tag">Elite Athletics</span></div>
       </div>
     </div>
   </div>
@@ -509,126 +504,139 @@
 
 <!-- PROJECTS -->
 <section id="projects">
-  <div class="section-header">
-    <span class="section-num">02</span>
-    <h2 class="section-title">Projects</h2>
-  </div>
-
+  <div class="section-header reveal"><span class="section-num">02</span><h2 class="section-title">Projects</h2></div>
   <div class="proj-grid">
-    <div class="proj-card">
-      <p class="proj-num">P.01</p>
-      <h3 class="proj-name">ViolationIQ</h3>
-      <p class="proj-desc">Agentic tool scraping live NYC Open Data to classify and prioritize building violations by severity and cost exposure. Surfaces high-risk properties in under 2 minutes.</p>
-      <p class="proj-stack">Python · RAG · NYC Open Data · LangChain</p>
+    <div class="proj-card reveal">
+      <div class="proj-terminal">
+        <div><span class="t-prompt">$ </span><span class="t-cmd">python violationiq.py</span></div>
+        <div class="t-out">→ Fetching NYC Open Data (DOB/ECB/HPD)...</div>
+        <div class="t-out">→ Classifying 847 violations...</div>
+        <div class="t-green">✓ High-risk assets identified in 1m 42s</div>
+        <div class="t-out">→ Cost exposure: $2.4M flagged</div>
+        <div><span class="t-prompt">$ </span><span class="t-cursor"></span></div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-num">P.01</p>
+        <h3 class="proj-name">ViolationIQ</h3>
+        <p class="proj-desc">Agentic tool scraping live NYC Open Data to classify and prioritize building violations. Surfaces high-risk assets in under 2 minutes vs. 30+ previously.</p>
+        <p class="proj-stack">Python · RAG · NYC Open Data · LangChain</p>
+      </div>
     </div>
-    <div class="proj-card">
-      <p class="proj-num">P.02</p>
-      <h3 class="proj-name">RAG Policy Intelligence Chatbot</h3>
-      <p class="proj-desc">Internal semantic retrieval system over UNESCO/UNGA documents. Replaced hours of manual research with sub-second contextual query responses for a UN analyst team.</p>
-      <p class="proj-stack">LangChain · OpenAI Embeddings · Pinecone</p>
+    <div class="proj-card reveal">
+      <div class="proj-terminal">
+        <div><span class="t-prompt">$ </span><span class="t-cmd">rag_chatbot.query(</span></div>
+        <div class="t-out" style="padding-left:1rem"><span class="t-string">"UNESCO climate policy 2024"</span></div>
+        <div class="t-out">)</div>
+        <div class="t-out">→ Searching 100+ documents...</div>
+        <div class="t-green">✓ 3 relevant sections found (0.3s)</div>
+        <div><span class="t-comment"># 40% research time reduction</span></div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-num">P.02</p>
+        <h3 class="proj-name">RAG Policy Intelligence Chatbot</h3>
+        <p class="proj-desc">Semantic retrieval over UNESCO/UNGA documents. Replaced hours of manual research with sub-second contextual responses for a UN analyst team.</p>
+        <p class="proj-stack">LangChain · OpenAI Embeddings · Pinecone</p>
+      </div>
     </div>
-    <div class="proj-card">
-      <p class="proj-num">P.03</p>
-      <h3 class="proj-name">Climate Anomaly Predictor</h3>
-      <p class="proj-desc">ML model trained on 8M+ data points to predict climate anomalies. Visualized city-level forecasts to inform urban heat island policy research.</p>
-      <p class="proj-stack">Python · TensorFlow · Pandas · Matplotlib</p>
+    <div class="proj-card reveal">
+      <div class="proj-terminal">
+        <div><span class="t-prompt">$ </span><span class="t-cmd">python climate_model.py</span></div>
+        <div class="t-out">→ Loading <span class="t-num">8,241,037</span> data points...</div>
+        <div class="t-out">→ Training TensorFlow model...</div>
+        <div class="t-green">✓ Accuracy: 87.3% on test set</div>
+        <div class="t-out">→ Generating heatmap forecasts...</div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-num">P.03</p>
+        <h3 class="proj-name">Climate Anomaly Predictor</h3>
+        <p class="proj-desc">ML model on 8M+ data points predicting climate anomalies. City-level forecast heatmaps informing urban heat island policy research.</p>
+        <p class="proj-stack">Python · TensorFlow · Pandas · Matplotlib</p>
+      </div>
     </div>
-    <div class="proj-card">
-      <p class="proj-num">P.04</p>
-      <h3 class="proj-name">Fencers Club NYC Site Redesign</h3>
-      <p class="proj-desc">Led full product lifecycle for a 140-year-old nonprofit. 7-page responsive full-stack site with CI/CD pipeline, HTTPS, and cloud deployment on Render.</p>
-      <p class="proj-stack">Django · Tailwind CSS · SQLite · Render</p>
+    <div class="proj-card reveal">
+      <div class="proj-terminal">
+        <div><span class="t-prompt">$ </span><span class="t-cmd">git push origin main</span></div>
+        <div class="t-out">→ Building Django app...</div>
+        <div class="t-out">→ Running CI/CD pipeline...</div>
+        <div class="t-green">✓ Deployed to Render (HTTPS)</div>
+        <div class="t-out"><span class="t-comment"># fencersclubnyc.org — live</span></div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-num">P.04</p>
+        <h3 class="proj-name">Fencers Club NYC Redesign</h3>
+        <p class="proj-desc">Led full product lifecycle for a 140-year-old nonprofit. 7-page responsive site with CI/CD, HTTPS, and cloud deployment.</p>
+        <p class="proj-stack">Django · Tailwind CSS · SQLite · Render</p>
+      </div>
     </div>
-    <div class="proj-card">
-      <p class="proj-num">P.05</p>
-      <h3 class="proj-name">Inventory Management System</h3>
-      <p class="proj-desc">Full-stack GUI app with transaction tracking, sales analytics, user login, and security testing. Built and validated via Pytest/Bandit.</p>
-      <p class="proj-stack">Python · Kivy · SQLite</p>
+    <div class="proj-card reveal">
+      <div class="proj-terminal">
+        <div><span class="t-prompt">$ </span><span class="t-cmd">pytest tests/ --security</span></div>
+        <div class="t-out">→ Running Bandit security scan...</div>
+        <div class="t-green">✓ 47/47 tests passed</div>
+        <div class="t-green">✓ No critical vulnerabilities</div>
+        <div class="t-out">→ SQLite schema validated</div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-num">P.05</p>
+        <h3 class="proj-name">Inventory Management System</h3>
+        <p class="proj-desc">Full-stack GUI with transaction tracking, sales analytics, user auth, and security testing via Pytest/Bandit.</p>
+        <p class="proj-stack">Python · Kivy · SQLite</p>
+      </div>
     </div>
-    <div class="proj-card">
-      <p class="proj-num">P.06</p>
-      <h3 class="proj-name">Airbnb NLP Earnings Analysis</h3>
-      <p class="proj-desc">Cleaned 7,000+ listings; applied NLP sentiment analysis to identify language patterns statistically correlated with higher host earnings across market segments.</p>
-      <p class="proj-stack">Python · Pandas · scikit-learn · NLP</p>
+    <div class="proj-card reveal">
+      <div class="proj-terminal">
+        <div><span class="t-prompt">$ </span><span class="t-cmd">nlp_analyze.run(listings)</span></div>
+        <div class="t-out">→ Processing <span class="t-num">7,241</span> Airbnb records...</div>
+        <div class="t-out">→ Running sentiment analysis...</div>
+        <div class="t-green">✓ Key earnings patterns found</div>
+        <div class="t-out">→ Correlation: r=<span class="t-num">0.73</span></div>
+      </div>
+      <div class="proj-body">
+        <p class="proj-num">P.06</p>
+        <h3 class="proj-name">Airbnb NLP Earnings Analysis</h3>
+        <p class="proj-desc">Cleaned 7,000+ listings; NLP sentiment analysis identifying language patterns correlated with higher host earnings.</p>
+        <p class="proj-stack">Python · Pandas · scikit-learn · NLP</p>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- SKILLS -->
-<section>
-  <div class="section-header">
-    <span class="section-num">03</span>
-    <h2 class="section-title">Technical Skills</h2>
-  </div>
-
-  <div class="two-col">
-    <div class="skills-block">
-      <div class="skill-row">
-        <p class="skill-cat">AI / ML (core)</p>
-        <div class="skill-pills">
-          <span class="skill-pill hot">LangChain</span>
-          <span class="skill-pill hot">RAG Pipelines</span>
-          <span class="skill-pill hot">GPT-4 API</span>
-          <span class="skill-pill hot">Claude API</span>
-          <span class="skill-pill hot">LLM Integration</span>
-          <span class="skill-pill">Pinecone</span>
-          <span class="skill-pill">NLP Pipelines</span>
-          <span class="skill-pill">scikit-learn</span>
-          <span class="skill-pill">TensorFlow</span>
-        </div>
+<section id="skills">
+  <div class="section-header reveal"><span class="section-num">03</span><h2 class="section-title">Skills</h2></div>
+  <div class="skills-inner">
+    <div>
+      <div class="skill-group reveal">
+        <p class="skill-group-title">AI / ML Stack</p>
+        <div class="skill-bar-row"><div class="skill-bar-label"><span>LangChain + RAG</span><span>Expert</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="95"></div></div></div>
+        <div class="skill-bar-row"><div class="skill-bar-label"><span>LLM Integration (GPT-4, Claude)</span><span>Expert</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="95"></div></div></div>
+        <div class="skill-bar-row"><div class="skill-bar-label"><span>NLP Pipelines</span><span>Advanced</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="88"></div></div></div>
+        <div class="skill-bar-row"><div class="skill-bar-label"><span>scikit-learn / TensorFlow</span><span>Advanced</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="82"></div></div></div>
+        <div class="skill-bar-row"><div class="skill-bar-label"><span>Vector DBs (Pinecone)</span><span>Advanced</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="85"></div></div></div>
       </div>
-      <div class="skill-row">
-        <p class="skill-cat">Languages</p>
-        <div class="skill-pills">
-          <span class="skill-pill hot">Python</span>
-          <span class="skill-pill hot">SQL</span>
-          <span class="skill-pill">JavaScript</span>
-          <span class="skill-pill">Java</span>
-          <span class="skill-pill">R</span>
-          <span class="skill-pill">C++</span>
-          <span class="skill-pill">VBA</span>
-        </div>
+      <div class="skill-group reveal">
+        <p class="skill-group-title">Languages &amp; Data</p>
+        <div class="skill-bar-row"><div class="skill-bar-label"><span>Python</span><span>Expert</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="96"></div></div></div>
+        <div class="skill-bar-row"><div class="skill-bar-label"><span>SQL</span><span>Advanced</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="88"></div></div></div>
+        <div class="skill-bar-row"><div class="skill-bar-label"><span>Power BI / Tableau</span><span>Advanced</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="86"></div></div></div>
+        <div class="skill-bar-row"><div class="skill-bar-label"><span>JavaScript / HTML / CSS</span><span>Proficient</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="72"></div></div></div>
       </div>
-      <div class="skill-row">
-        <p class="skill-cat">Data & Cloud</p>
-        <div class="skill-pills">
-          <span class="skill-pill">PostgreSQL</span>
-          <span class="skill-pill">MongoDB</span>
-          <span class="skill-pill">AWS</span>
-          <span class="skill-pill">Azure</span>
-          <span class="skill-pill">REST APIs</span>
-          <span class="skill-pill">Git</span>
-          <span class="skill-pill">Docker</span>
-        </div>
+      <div class="skill-group reveal">
+        <p class="skill-group-title">Spoken Languages</p>
+        <div class="skill-bar-row"><div class="skill-bar-label"><span>English</span><span>Native</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="100"></div></div></div>
+        <div class="skill-bar-row"><div class="skill-bar-label"><span>French</span><span>Fluent</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="90"></div></div></div>
+        <div class="skill-bar-row"><div class="skill-bar-label"><span>Spanish</span><span>Intermediate</span></div><div class="skill-bar-bg"><div class="skill-bar-fill" data-width="55"></div></div></div>
       </div>
     </div>
-    <div class="skills-block">
-      <div class="skill-row">
-        <p class="skill-cat">BI & Visualization</p>
-        <div class="skill-pills">
-          <span class="skill-pill hot">Power BI</span>
-          <span class="skill-pill">Tableau</span>
-          <span class="skill-pill">Streamlit</span>
-          <span class="skill-pill">Matplotlib</span>
-          <span class="skill-pill">Seaborn</span>
-          <span class="skill-pill">Plotly</span>
-        </div>
+    <div>
+      <div class="reveal" style="margin-bottom:2.5rem">
+        <p class="skill-group-title" style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--accent);margin-bottom:1.25rem">Capability Radar</p>
+        <div class="radar-wrap"><canvas id="radarChart" width="320" height="320"></canvas></div>
       </div>
-      <div class="skill-row">
-        <p class="skill-cat">Web & Full-Stack</p>
-        <div class="skill-pills">
-          <span class="skill-pill">Django</span>
-          <span class="skill-pill">Tailwind CSS</span>
-          <span class="skill-pill">HTML/CSS</span>
-          <span class="skill-pill">SQLite</span>
-        </div>
-      </div>
-      <div class="skill-row">
-        <p class="skill-cat">Spoken Languages</p>
-        <div class="skill-pills">
-          <span class="skill-pill hot">English (Native)</span>
-          <span class="skill-pill">French (Fluent)</span>
-          <span class="skill-pill">Spanish (Intermediate)</span>
+      <div class="skill-group reveal">
+        <p class="skill-group-title">Tools &amp; Platforms</p>
+        <div class="skill-pills-wrap">
+          <span class="skill-pill hot">Django</span><span class="skill-pill hot">PostgreSQL</span><span class="skill-pill">MongoDB</span><span class="skill-pill">Docker</span><span class="skill-pill">Git</span><span class="skill-pill">AWS</span><span class="skill-pill">Azure</span><span class="skill-pill">REST APIs</span><span class="skill-pill">Streamlit</span><span class="skill-pill">SharePoint</span><span class="skill-pill">Airtable</span><span class="skill-pill">Notion</span><span class="skill-pill">Zapier</span><span class="skill-pill">Tailwind CSS</span>
         </div>
       </div>
     </div>
@@ -636,176 +644,325 @@
 </section>
 
 <!-- ATHLETICS -->
-<section id="athletics" style="padding-bottom: 2rem;">
-  <div class="section-header">
-    <span class="section-num">04</span>
-    <h2 class="section-title">Athletics</h2>
-  </div>
-
-  <div class="athletics-hero">
+<section id="athletics">
+  <div class="section-header reveal"><span class="section-num">04</span><h2 class="section-title">Athletics</h2></div>
+  <div class="athletics-banner reveal">
     <div>
-      <h3 class="ath-headline">NCAA D1 Fencing<br><em>Captain.</em><br>4 Years.</h3>
+      <h3 class="ath-headline">NCAA D1<br>Fencing<br><em>Captain.</em></h3>
     </div>
     <div class="ath-stats">
-      <div class="ath-stat">
-        <div class="ath-stat-num">Age 8</div>
-        <div class="ath-stat-label">Started at Peter Westbrook Foundation</div>
-      </div>
-      <div class="ath-stat">
-        <div class="ath-stat-num">2021–25</div>
-        <div class="ath-stat-label">D1 Épée Varsity, LIU Brooklyn</div>
-      </div>
-      <div class="ath-stat">
-        <div class="ath-stat-num">2022–</div>
-        <div class="ath-stat-label">Professional Fencer</div>
-      </div>
-      <div class="ath-stat">
-        <div class="ath-stat-num">3rd</div>
-        <div class="ath-stat-label">USATF Indoor Nationals, 3000m Racewalk</div>
-      </div>
+      <div class="ath-stat"><div class="ath-stat-num">Age 8</div><div class="ath-stat-label">Peter Westbrook Foundation</div></div>
+      <div class="ath-stat"><div class="ath-stat-num">4 Years</div><div class="ath-stat-label">D1 Épée Varsity Captain · LIU</div></div>
+      <div class="ath-stat"><div class="ath-stat-num">2022–</div><div class="ath-stat-label">Professional Fencer · Active</div></div>
+      <div class="ath-stat"><div class="ath-stat-num">Grand Slam</div><div class="ath-stat-label">US Open Ball Girl · USTA</div></div>
     </div>
   </div>
 
-  <div class="ath-timeline">
-    <div class="ath-event">
-      <span class="ath-year">2003</span>
-      <span class="ath-event-text">Born in Brooklyn, NY</span>
+  <!-- Second filmstrip: athletics photos -->
+  <div class="filmstrip-wrap reveal" id="filmstrip2">
+    <div class="filmstrip" id="filmstrip2-inner">
+      <div class="film-frame"><div class="film-ph">🤺<br>Fencing action shot</div><div class="film-label">Épée · LIU Sharks · D1</div></div>
+      <div class="film-frame"><div class="film-ph">🤺<br>Add team photo</div><div class="film-label">LIU D1 Women's Fencing Team</div></div>
+      <div class="film-frame"><div class="film-ph">🎾<br>Add US Open photo</div><div class="film-label">US Open Ball Crew · USTA · Flushing</div></div>
+      <div class="film-frame"><div class="film-ph">🤺<br>Add PWF coaching photo</div><div class="film-label">Peter Westbrook Foundation · Volunteer Coach</div></div>
+      <div class="film-frame"><div class="film-ph">🏆<br>Add competition / medal photo</div><div class="film-label">PSAL Championships · Brooklyn</div></div>
+      <div class="film-frame"><div class="film-ph">🤺<br>Add Atlas Lions photo</div><div class="film-label">Atlas Lions Fencing · Founder</div></div>
     </div>
-    <div class="ath-event">
-      <span class="ath-year">~2011</span>
-      <span class="ath-event-text">Started fencing at age 8, Peter Westbrook Foundation · Trained in foil under coaches Nzinga Prescod and Iman Blow</span>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <h3 class="reveal" style="font-family:'DM Serif Display',serif;font-size:1.5rem;margin-bottom:2rem">Fencing Career Timeline</h3>
+      <div class="fence-timeline">
+        <div class="fence-event reveal"><div class="fence-dot"></div><div class="fence-year">~2011 · Age 8</div><div class="fence-title">Peter Westbrook Foundation</div><div class="fence-desc">Picked up a foil at the legendary NYC fencing foundation. Trained under coaches Nzinga Prescod and Iman Blow in foil for 6 years.</div></div>
+        <div class="fence-event reveal"><div class="fence-dot"></div><div class="fence-year">~2015 · Age ~14</div><div class="fence-title">Transition to Épée</div><div class="fence-desc">Switched from foil to épée — the weapon that would define her competitive career through college and professionally.</div></div>
+        <div class="fence-event reveal"><div class="fence-dot"></div><div class="fence-year">2017–2019 · High School</div><div class="fence-title">PSAL Championships — Midwood High School</div><div class="fence-desc">2nd place PSAL Épée Championships individual (2018–19). 4th place individual (2017–18). One of NYC's top scholastic épéeists.</div></div>
+        <div class="fence-event reveal"><div class="fence-dot"></div><div class="fence-year">2021</div><div class="fence-title">NCAA Division I — LIU Brooklyn Sharks</div><div class="fence-desc">Joined LIU's D1 Women's Fencing program. Earned USFA All-Academic Team honors in her first season.</div></div>
+        <div class="fence-event reveal"><div class="fence-dot"></div><div class="fence-year">2022</div><div class="fence-title">Named Épée Captain + Turns Pro</div><div class="fence-desc">Appointed captain. Simultaneously began competing professionally — balancing elite academics, team leadership, and pro competition.</div></div>
+        <div class="fence-event reveal"><div class="fence-dot"></div><div class="fence-year">2022–23</div><div class="fence-title">Winter Academic Honor Roll</div><div class="fence-desc">Recognized on Academic Honor Roll while captaining the team — one of several academic honors earned across four D1 seasons.</div></div>
+        <div class="fence-event reveal"><div class="fence-dot"></div><div class="fence-year">2025 – Present</div><div class="fence-title">Graduated &amp; Continues Competing</div><div class="fence-desc">Graduated Summa Cum Laude (3.9 GPA) completing 4 years as D1 captain. Competes professionally and coaches through Atlas Lions Fencing.</div></div>
+      </div>
     </div>
-    <div class="ath-event">
-      <span class="ath-year">2018–19</span>
-      <span class="ath-event-text">PSAL Épée Championships — 2nd place individual (2019), 4th place (2018) · Competed in cross country nationals and placed 3rd at USATF Indoor Nationals (3000m racewalk)</span>
-    </div>
-    <div class="ath-event">
-      <span class="ath-year">2021</span>
-      <span class="ath-event-text">Graduated Midwood High School (Medical Sciences Program, Advanced Regents, Honor Roll) · Joined LIU D1 Women's Fencing</span>
-    </div>
-    <div class="ath-event">
-      <span class="ath-year">2021–22</span>
-      <span class="ath-event-text">USFA All-Academic Team · NCAA D1 Épée Varsity Starter</span>
-    </div>
-    <div class="ath-event">
-      <span class="ath-year">2022–23</span>
-      <span class="ath-event-text">Winter Academic Honor Roll · Named Épée Captain · Began professional fencing</span>
-    </div>
-    <div class="ath-event">
-      <span class="ath-year">2025</span>
-      <span class="ath-event-text">Graduated Summa Cum Laude · Completed 4 years as D1 captain · Continues competing professionally</span>
+    <div>
+      <h3 class="reveal" style="font-family:'DM Serif Display',serif;font-size:1.5rem;margin-bottom:2rem">Beyond the Strip</h3>
+      <div class="reveal" style="border:1px solid var(--border);padding:2rem;margin-bottom:1.5rem">
+        <p class="exp-company" style="margin-bottom:0.5rem">US Open Tennis · USTA</p>
+        <p style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:0.75rem">Ball Girl — Grand Slam</p>
+        <p style="font-size:14px;color:var(--muted);line-height:1.65">Selected through USTA's competitive tryout at the Billie Jean King National Tennis Center. Served on-court at one of tennis's four Grand Slams — working Arthur Ashe Stadium alongside world-ranked pros.</p>
+      </div>
+      <div class="reveal" style="border:1px solid var(--border);padding:2rem;margin-bottom:1.5rem">
+        <p class="exp-company" style="margin-bottom:0.5rem">Atlas Lions Fencing</p>
+        <p style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:0.75rem">Founder &amp; Head Coach</p>
+        <p style="font-size:14px;color:var(--muted);line-height:1.65">Founded to expand fencing access in underrepresented NYC communities — built on the same foundation that gave Sarah a foil at age 8. Coaching the next generation to compete.</p>
+      </div>
+      <div class="reveal" style="border:1px solid var(--border);padding:2rem">
+        <p class="exp-company" style="margin-bottom:0.5rem">Multi-Sport Athlete</p>
+        <p style="font-family:'DM Serif Display',serif;font-size:1.2rem;margin-bottom:0.75rem">Cross Country · Track &amp; Field</p>
+        <p style="font-size:14px;color:var(--muted);line-height:1.65">Competed at cross country nationals. 400+ community service hours logged in high school. Midwood High School Medical Sciences program, Advanced Regents, Honor Roll.</p>
+      </div>
     </div>
   </div>
 </section>
 
 <!-- COMMUNITY -->
 <section id="community">
-  <div class="section-header">
-    <span class="section-num">05</span>
-    <h2 class="section-title">Community</h2>
+  <div class="section-header reveal"><span class="section-num">05</span><h2 class="section-title">Community</h2></div>
+
+  <!-- Third filmstrip: community photos -->
+  <div class="filmstrip-wrap reveal" id="filmstrip3">
+    <div class="filmstrip" id="filmstrip3-inner">
+      <div class="film-frame"><div class="film-ph">👩‍💻<br>Girls Who Code event photo</div><div class="film-label">Girls Who Code · College Loop Leader</div></div>
+      <div class="film-frame"><div class="film-ph">🌍<br>Model UN photo</div><div class="film-label">Model UN · NYHQ · Armenia GA2</div></div>
+      <div class="film-frame"><div class="film-ph">🤝<br>Volunteer coaching photo</div><div class="film-label">Peter Westbrook Foundation · Volunteer</div></div>
+      <div class="film-frame"><div class="film-ph">⚔️<br>Atlas Lions event photo</div><div class="film-label">Atlas Lions Fencing · Founder</div></div>
+      <div class="film-frame"><div class="film-ph">🎓<br>Student gov / SAAC photo</div><div class="film-label">NEC SAAC · VP 2023–25</div></div>
+    </div>
   </div>
 
   <div class="comm-grid">
-    <div class="comm-card">
-      <div class="comm-icon">⚔️</div>
-      <h3 class="comm-title">Atlas Lions Fencing</h3>
-      <p class="comm-role">Founder</p>
-      <p class="comm-desc">Built to expand access to fencing for underrepresented communities — rooted in the same foundation that launched Sarah's own journey at age 8.</p>
+    <div class="comm-card reveal"><span class="comm-badge">Founder</span><h3 class="comm-title">Atlas Lions Fencing</h3><p class="comm-role">Organization Founder</p><p class="comm-desc">Built to expand fencing access for underrepresented NYC communities — rooted in the same foundation that launched Sarah's journey at age 8.</p></div>
+    <div class="comm-card reveal"><span class="comm-badge">Founder</span><h3 class="comm-title">Hack Your Path</h3><p class="comm-role">Organization Founder</p><p class="comm-desc">Tech access and career development initiative opening doors for underrepresented students entering engineering and data fields.</p></div>
+    <div class="comm-card reveal"><span class="comm-badge">Leader</span><h3 class="comm-title">Girls Who Code</h3><p class="comm-role">College Loop Leader</p><p class="comm-desc">Led a college chapter mentoring the next generation of women in technology throughout her four years at LIU.</p></div>
+    <div class="comm-card reveal"><span class="comm-badge">Top Delegation</span><h3 class="comm-title">Model UN — NYHQ</h3><p class="comm-role">Delegate · Armenia GA2 · Top 3 Position Paper</p><p class="comm-desc">Represented Armenia at the General Assembly 2 in New York HQ. Top honors for position paper and full delegation performance.</p></div>
+    <div class="comm-card reveal"><span class="comm-badge">Volunteer</span><h3 class="comm-title">Peter Westbrook Foundation</h3><p class="comm-role">Volunteer Coach &amp; Mentor</p><p class="comm-desc">Giving back to the foundation that gave her a foil at age 8. Active coach and mentor for youth fencers across NYC.</p></div>
+    <div class="comm-card reveal"><span class="comm-badge">Elected · 3 Years</span><h3 class="comm-title">Student Gov + NEC SAAC</h3><p class="comm-role">Exec Secretary (2022–25) · VP (2023–25)</p><p class="comm-desc">Three years of elected student government service and Northeast Conference SAAC VP — advocating for student-athlete interests at the conference level.</p></div>
+  </div>
+
+  <!-- Testimonials -->
+  <div class="testimonial-row">
+    <div class="testimonial reveal">
+      <blockquote>"Sarah consistently delivered production-ready systems under real research deadlines. Her ability to bridge deep technical work with policy context is rare and genuinely valuable."</blockquote>
+      <cite>— Supervisor, World Information Transfer · UN-Affiliated NGO</cite>
     </div>
-    <div class="comm-card">
-      <div class="comm-icon">💻</div>
-      <h3 class="comm-title">Hack Your Path</h3>
-      <p class="comm-role">Founder</p>
-      <p class="comm-desc">Tech access and career development initiative for underrepresented students entering engineering and data fields.</p>
-    </div>
-    <div class="comm-card">
-      <div class="comm-icon">👩‍💻</div>
-      <h3 class="comm-title">Girls Who Code</h3>
-      <p class="comm-role">College Loop Leader</p>
-      <p class="comm-desc">Led a college chapter mentoring the next generation of women in technology throughout undergrad.</p>
-    </div>
-    <div class="comm-card">
-      <div class="comm-icon">🏛️</div>
-      <h3 class="comm-title">Model UN — NYHQ</h3>
-      <p class="comm-role">Delegate (Armenia, GA2) · Top 3 Position Paper + Top Delegation</p>
-      <p class="comm-desc">Represented Armenia at the General Assembly 2 committee in New York HQ. Earned top honors for position paper and delegation performance.</p>
-    </div>
-    <div class="comm-card">
-      <div class="comm-icon">🤝</div>
-      <h3 class="comm-title">Peter Westbrook Foundation</h3>
-      <p class="comm-role">Volunteer Coach & Mentor</p>
-      <p class="comm-desc">Giving back to the foundation that gave her a foil at age 8. Active volunteer, coach, and mentor for youth fencers in New York City.</p>
-    </div>
-    <div class="comm-card">
-      <div class="comm-icon">🎓</div>
-      <h3 class="comm-title">Student Government + NEC SAAC</h3>
-      <p class="comm-role">Exec Secretary (2022–25) · VP (2023–25)</p>
-      <p class="comm-desc">Three years of elected service in LIU student government and as NEC Student-Athlete Advisory Committee VP, advocating for student and athlete interests.</p>
+    <div class="testimonial reveal">
+      <blockquote>"She brings the same competitive intensity to engineering that she brings to fencing — focused, disciplined, and always looking for the next edge. One of the most well-rounded people I've worked with."</blockquote>
+      <cite>— Coach / Colleague · LIU Athletics</cite>
     </div>
   </div>
 </section>
 
-<!-- AWARDS -->
+<!-- RECOGNITION -->
 <section>
-  <div class="section-header">
-    <span class="section-num">06</span>
-    <h2 class="section-title">Recognition</h2>
-  </div>
-
+  <div class="section-header reveal"><span class="section-num">06</span><h2 class="section-title">Recognition</h2></div>
   <div class="awards-list">
-    <div class="award-item">
-      <p class="award-name">Google AI/ML & Data Engineering Scholar</p>
-      <p class="award-context">Competitive scholarship · AI/ML focus</p>
+    <div class="award-item reveal"><p class="award-name">Google AI/ML & Data Engineering Scholar</p><p class="award-context">Competitive scholarship · AI/ML focus</p></div>
+    <div class="award-item reveal"><p class="award-name">Harvard WeCode ×4</p><p class="award-context">2022–2025 · Annual selectee</p></div>
+    <div class="award-item reveal"><p class="award-name">Summa Cum Laude</p><p class="award-context">LIU · Major GPA 3.9 / Overall 3.73</p></div>
+    <div class="award-item reveal"><p class="award-name">Dean's List ×7</p><p class="award-context">7 consecutive semesters · LIU</p></div>
+    <div class="award-item reveal"><p class="award-name">USFA All-Academic Team</p><p class="award-context">NCAA D1 Fencing · 2021–22</p></div>
+    <div class="award-item reveal"><p class="award-name">Model UN Top Delegation</p><p class="award-context">Top 3 Position Paper + Top Delegation · NYHQ</p></div>
+    <div class="award-item reveal"><p class="award-name">Winter Academic Honor Roll</p><p class="award-context">NCAA D1 · 2022–23</p></div>
+    <div class="award-item reveal"><p class="award-name">PSAL Championships · 2nd Place</p><p class="award-context">Épée Individual · 2018–19</p></div>
+    <div class="award-item reveal"><p class="award-name">Community Service Award</p><p class="award-context">400+ hours · Midwood High School</p></div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header reveal"><span class="section-num">07</span><h2 class="section-title">Let's Talk</h2></div>
+  <div class="contact-grid">
+    <div class="reveal">
+      <h3 class="footer-cta-head" style="font-family:'DM Serif Display',serif;font-size:clamp(1.8rem,3vw,2.5rem);line-height:1.1;margin-bottom:1.5rem">Let's build<br>something <em style="color:var(--accent);font-style:italic">real.</em></h3>
+      <p style="font-size:15px;color:var(--muted);max-width:380px;line-height:1.75;margin-bottom:2rem">Open to Data & AI Engineering roles. If you're working on something that matters — policy, health, equity, infrastructure — I want to hear about it.</p>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <a class="footer-link" href="mailto:sarahtellis.ai@gmail.com" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);text-decoration:none;transition:color 0.2s">sarahtellis.ai@gmail.com</a>
+        <a class="footer-link" href="https://linkedin.com/in/sarahtellis" target="_blank" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);text-decoration:none;transition:color 0.2s">linkedin.com/in/sarahtellis</a>
+        <a class="footer-link" href="tel:+16468535084" style="font-family:'DM Mono',monospace;font-size:13px;color:var(--muted);text-decoration:none;transition:color 0.2s">+1 (646) 853-5084</a>
+      </div>
     </div>
-    <div class="award-item">
-      <p class="award-name">Harvard WeCode</p>
-      <p class="award-context">4x participant · 2022–2025</p>
-    </div>
-    <div class="award-item">
-      <p class="award-name">Summa Cum Laude</p>
-      <p class="award-context">Long Island University · GPA 3.9</p>
-    </div>
-    <div class="award-item">
-      <p class="award-name">Dean's List ×7</p>
-      <p class="award-context">7 consecutive semesters</p>
-    </div>
-    <div class="award-item">
-      <p class="award-name">USFA All-Academic Team</p>
-      <p class="award-context">NCAA D1 Fencing · 2021–22</p>
-    </div>
-    <div class="award-item">
-      <p class="award-name">Model UN Top Delegation</p>
-      <p class="award-context">Top 3 Position Paper + Top Delegation · NYHQ</p>
-    </div>
-    <div class="award-item">
-      <p class="award-name">USATF Indoor Nationals · 3rd Place</p>
-      <p class="award-context">3000m Racewalk</p>
-    </div>
-    <div class="award-item">
-      <p class="award-name">PSAL Championships · 2nd Place</p>
-      <p class="award-context">Épée Individual · 2018–19</p>
-    </div>
-    <div class="award-item">
-      <p class="award-name">Community Service Award</p>
-      <p class="award-context">400+ hours logged · Midwood High School</p>
+    <div class="reveal">
+      <!-- Formspree form — replace ACTION with your Formspree endpoint -->
+      <form id="contact-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+        <div class="form-field">
+          <label class="form-label">Name</label>
+          <input class="form-input" type="text" name="name" placeholder="Your name" required>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Email</label>
+          <input class="form-input" type="email" name="email" placeholder="your@email.com" required>
+        </div>
+        <div class="form-field">
+          <label class="form-label">Message</label>
+          <textarea class="form-textarea" name="message" placeholder="Tell me about what you're building..." required></textarea>
+        </div>
+        <button type="submit" class="form-submit">Send Message →</button>
+        <p class="form-note">Powered by Formspree — free, no backend needed.</p>
+        <p class="form-sent" id="form-sent">✓ Message sent! I'll get back to you soon.</p>
+      </form>
     </div>
   </div>
 </section>
 
-<!-- FOOTER / CONTACT -->
-<footer id="contact">
+<!-- FOOTER -->
+<footer>
   <div>
-    <h2 class="footer-cta-head">Let's build<br>something <em>real.</em></h2>
-    <p style="font-size:15px; color:#4a4540; max-width:380px; line-height:1.7;">Open to Data & AI Engineering roles. If you're working on something that matters — policy, health, equity, infrastructure — let's talk.</p>
-    <p class="footer-copy">© 2026 Sarah T. Ellis · Brooklyn, NY</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em">© 2026 Sarah T. Ellis · Brooklyn, New York</p>
+    <p style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:0.1em;margin-top:6px;opacity:0.6">Built with HTML · CSS · JavaScript · No frameworks</p>
   </div>
   <div class="footer-links">
-    <a class="footer-link" href="mailto:sarahtellis.ai@gmail.com">sarahtellis.ai@gmail.com</a>
-    <a class="footer-link" href="https://linkedin.com/in/sarahtellis" target="_blank">linkedin.com/in/sarahtellis</a>
-    <a class="footer-link" href="tel:+16468535084">+1 (646) 853-5084</a>
-    <a class="footer-link" href="#">Brooklyn, New York</a>
+    <a class="footer-link" href="mailto:sarahtellis.ai@gmail.com">Email</a>
+    <a class="footer-link" href="https://linkedin.com/in/sarahtellis" target="_blank">LinkedIn</a>
+    <a class="footer-link" href="#">GitHub</a>
   </div>
 </footer>
 
+<script>
+// ── DARK MODE ──
+function toggleDark(){
+  const t=document.documentElement;
+  const isDark=t.getAttribute('data-theme')==='dark';
+  t.setAttribute('data-theme',isDark?'light':'dark');
+  document.getElementById('theme-btn').textContent=isDark?'◐ Dark':'☀ Light';
+  if(radarChartInstance) updateRadarTheme();
+}
+
+// ── CURSOR TRAIL ──
+const dot=document.getElementById('cdot'), ring=document.getElementById('cring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px';});
+function animRing(){rx+=(mx-rx)*0.15;ry+=(my-ry)*0.15;ring.style.left=Math.round(rx)+'px';ring.style.top=Math.round(ry)+'px';requestAnimationFrame(animRing);}
+animRing();
+document.querySelectorAll('a,button,.proj-card,.exp-item,.comm-card').forEach(el=>{
+  el.addEventListener('mouseenter',()=>{dot.style.transform='translate(-50%,-50%) scale(2.5)';ring.style.opacity='0.2';});
+  el.addEventListener('mouseleave',()=>{dot.style.transform='translate(-50%,-50%) scale(1)';ring.style.opacity='0.5';});
+});
+
+// ── SCROLL PROGRESS ──
+window.addEventListener('scroll',()=>{
+  const h=document.documentElement.scrollHeight-window.innerHeight;
+  document.getElementById('scroll-fill').style.height=(window.scrollY/h*100)+'%';
+  document.getElementById('navbar').classList.toggle('scrolled',window.scrollY>20);
+  updateActiveNav();
+});
+
+// ── ACTIVE NAV ──
+function updateActiveNav(){
+  const secs=['experience','projects','skills','athletics','community','contact'];
+  let cur='';
+  secs.forEach(id=>{
+    const el=document.getElementById(id);
+    if(el&&el.getBoundingClientRect().top<120)cur=id;
+  });
+  document.querySelectorAll('.nav-links a').forEach(a=>{
+    a.classList.toggle('active',a.getAttribute('href')==='#'+cur);
+  });
+}
+
+// ── SCROLL REVEAL ──
+const revealObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:0.08,rootMargin:'0px 0px -30px 0px'});
+document.querySelectorAll('.reveal,.reveal-left,.reveal-right').forEach(el=>revealObs.observe(el));
+
+// ── ANIMATED COUNTERS ──
+const countObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const el=e.target;
+    const target=parseFloat(el.dataset.count);
+    const suffix=el.dataset.suffix||'';
+    const dec=parseInt(el.dataset.decimal||0);
+    let start=0,dur=1600,startTime=null;
+    function step(ts){
+      if(!startTime)startTime=ts;
+      const prog=Math.min((ts-startTime)/dur,1);
+      const ease=1-Math.pow(1-prog,3);
+      const val=target*ease;
+      el.textContent=(dec?val.toFixed(dec):Math.round(val))+suffix;
+      if(prog<1)requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+    countObs.unobserve(el);
+  });
+},{threshold:0.5});
+document.querySelectorAll('.stat-num[data-count]').forEach(el=>countObs.observe(el));
+
+// ── SKILL BARS ──
+const barObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    e.target.querySelectorAll('.skill-bar-fill').forEach(bar=>{
+      setTimeout(()=>{bar.style.width=bar.getAttribute('data-width')+'%';},200);
+    });
+  });
+},{threshold:0.2});
+document.querySelectorAll('.skill-group').forEach(el=>barObs.observe(el));
+
+// ── TYPING EFFECT ──
+const phrases=['Data & AI Engineer','LLM & Agentic Systems','NCAA D1 Fencing Captain','Community Builder','Brooklyn, New York'];
+let pi=0,ci=0,del=false;
+const tEl=document.getElementById('typed-text');
+function type(){
+  const p=phrases[pi];
+  if(!del){tEl.textContent=p.slice(0,++ci);if(ci===p.length){del=true;setTimeout(type,1800);return;}}
+  else{tEl.textContent=p.slice(0,--ci);if(ci===0){del=false;pi=(pi+1)%phrases.length;}}
+  setTimeout(type,del?45:80);
+}
+type();
+
+// ── RADAR CHART ──
+let radarChartInstance=null;
+function getRadarColors(){
+  const isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  return{border:isDark?'rgba(224,85,34,0.9)':'rgba(200,64,26,0.9)',bg:isDark?'rgba(224,85,34,0.15)':'rgba(200,64,26,0.12)',grid:isDark?'rgba(255,255,255,0.08)':'rgba(0,0,0,0.08)',tick:isDark?'rgba(255,255,255,0.4)':'rgba(0,0,0,0.4)',label:isDark?'#a09890':'#7a7570'};
+}
+function buildRadar(){
+  const c=getRadarColors();
+  const ctx=document.getElementById('radarChart').getContext('2d');
+  radarChartInstance=new Chart(ctx,{
+    type:'radar',
+    data:{
+      labels:['AI / ML','Data Eng','Full-Stack','Analytics','Leadership','Community'],
+      datasets:[{label:'Sarah T. Ellis',data:[96,90,72,88,92,95],borderColor:c.border,backgroundColor:c.bg,borderWidth:2,pointBackgroundColor:c.border,pointRadius:4,pointHoverRadius:6}]
+    },
+    options:{
+      responsive:false,scales:{r:{min:0,max:100,ticks:{display:false,stepSize:25},grid:{color:c.grid},angleLines:{color:c.grid},pointLabels:{font:{family:"'DM Mono',monospace",size:11},color:c.label}}},
+      plugins:{legend:{display:false}},
+      elements:{line:{tension:0.15}}
+    }
+  });
+}
+function updateRadarTheme(){
+  if(!radarChartInstance)return;
+  const c=getRadarColors();
+  radarChartInstance.data.datasets[0].borderColor=c.border;
+  radarChartInstance.data.datasets[0].backgroundColor=c.bg;
+  radarChartInstance.data.datasets[0].pointBackgroundColor=c.border;
+  radarChartInstance.options.scales.r.grid.color=c.grid;
+  radarChartInstance.options.scales.r.angleLines.color=c.grid;
+  radarChartInstance.options.scales.r.pointLabels.color=c.label;
+  radarChartInstance.update();
+}
+const radarObs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting&&!radarChartInstance){buildRadar();radarObs.disconnect();}});
+},{threshold:0.3});
+radarObs.observe(document.getElementById('radarChart'));
+
+// ── DRAG-SCROLL FILMSTRIPS ──
+['filmstrip','filmstrip2','filmstrip3'].forEach(id=>{
+  const wrap=document.getElementById(id);
+  if(!wrap)return;
+  let down=false,startX,scrollLeft;
+  wrap.addEventListener('mousedown',e=>{down=true;wrap.classList.add('grabbing');startX=e.pageX-wrap.offsetLeft;scrollLeft=wrap.scrollLeft;});
+  wrap.addEventListener('mouseleave',()=>{down=false;wrap.classList.remove('grabbing');});
+  wrap.addEventListener('mouseup',()=>{down=false;wrap.classList.remove('grabbing');});
+  wrap.addEventListener('mousemove',e=>{if(!down)return;e.preventDefault();const x=e.pageX-wrap.offsetLeft;wrap.scrollLeft=scrollLeft-(x-startX)*1.4;});
+});
+
+// ── CONTACT FORM ──
+const form=document.getElementById('contact-form');
+if(form){
+  form.addEventListener('submit',async e=>{
+    e.preventDefault();
+    const btn=form.querySelector('.form-submit');
+    btn.textContent='Sending...';
+    try{
+      const r=await fetch(form.action,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}});
+      if(r.ok){btn.style.display='none';document.getElementById('form-sent').style.display='block';}
+      else{btn.textContent='Try again — something went wrong';}
+    }catch{btn.textContent='Try again — something went wrong';}
+  });
+}
+</script>
 </body>
 </html>
