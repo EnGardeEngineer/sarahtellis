@@ -322,11 +322,16 @@ footer{border-top:1px solid var(--border);padding:4rem 3rem;display:grid;grid-te
   </div>
   <div class="hero-right">
     <div class="hero-photo-frame reveal-right">
-      <!-- REPLACE src WITH YOUR PHOTO -->
-      <div class="hero-photo-placeholder">
+      <!-- ============================================================
+           HERO PHOTO — upload a file named: photo-hero.jpg
+           Recommended: headshot or professional portrait of you
+           Size: any, ideally landscape or square, min 800px wide
+           ============================================================ -->
+      <img src="photo-hero.jpg" alt="Sarah T. Ellis" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+      <div class="hero-photo-placeholder" style="display:none">
         <div class="ph-icon">📸</div>
-        <div>Your photo here</div>
-        <div style="font-size:9px;opacity:0.5;margin-top:4px">Replace this div with:<br>&lt;img src="your-photo.jpg"&gt;</div>
+        <div>Upload: <strong>photo-hero.jpg</strong></div>
+        <div style="font-size:9px;opacity:0.5;margin-top:4px">Your headshot or portrait</div>
       </div>
       <div class="photo-caption">Sarah T. Ellis · Brooklyn, NY</div>
     </div>
@@ -372,13 +377,20 @@ footer{border-top:1px solid var(--border);padding:4rem 3rem;display:grid;grid-te
   <!-- Filmstrip image gallery -->
   <div class="filmstrip-wrap reveal" id="filmstrip">
     <div class="filmstrip" id="filmstrip-inner">
-      <div class="film-frame"><div class="film-ph">📸<br>Add photo: WIT / UN work</div><div class="film-label">World Information Transfer · 2025</div></div>
-      <div class="film-frame"><div class="film-ph">📸<br>Add photo: Pfizer internship</div><div class="film-label">Pfizer · Global Regulatory Sciences · 2024</div></div>
-      <div class="film-frame"><div class="film-ph">📸<br>Add photo: Cornell Tech BTT</div><div class="film-label">Cornell Tech AI/ML Fellow · 2021</div></div>
-      <div class="film-frame"><div class="film-ph">📸<br>Add photo: hackathon / coding</div><div class="film-label">Hack Your Path · Community</div></div>
-      <div class="film-frame"><div class="film-ph">📸<br>Add photo: fencing competition</div><div class="film-label">NCAA D1 Fencing · LIU Sharks</div></div>
-      <div class="film-frame"><div class="film-ph">📸<br>Add photo: US Open court</div><div class="film-label">US Open Ball Girl · USTA</div></div>
-      <div class="film-frame"><div class="film-ph">📸<br>Add photo: community / coaching</div><div class="film-label">Atlas Lions Fencing · Founder</div></div>
+      <!-- photo-exp-wit.jpg — You at WIT/UN, desk/office/team shot -->
+      <div class="film-frame"><img src="photo-exp-wit.jpg" alt="World Information Transfer" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>📸<br><strong>photo-exp-wit.jpg</strong><br>WIT / UN work photo</div><div class=\'film-label\'>World Information Transfer · 2025</div>'"><div class="film-label">World Information Transfer · 2025</div></div>
+      <!-- photo-exp-pfizer.jpg — You at Pfizer, office/presentation/team -->
+      <div class="film-frame"><img src="photo-exp-pfizer.jpg" alt="Pfizer" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>📸<br><strong>photo-exp-pfizer.jpg</strong><br>Pfizer internship photo</div><div class=\'film-label\'>Pfizer · Global Regulatory Sciences · 2024</div>'"><div class="film-label">Pfizer · Global Regulatory Sciences · 2024</div></div>
+      <!-- photo-exp-cornell.jpg — Cornell Tech BTT event/campus/cohort -->
+      <div class="film-frame"><img src="photo-exp-cornell.jpg" alt="Cornell Tech" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>📸<br><strong>photo-exp-cornell.jpg</strong><br>Cornell Tech BTT photo</div><div class=\'film-label\'>Cornell Tech AI/ML Fellow · 2021</div>'"><div class="film-label">Cornell Tech AI/ML Fellow · 2021</div></div>
+      <!-- photo-exp-hackathon.jpg — Hackathon, coding session, or Hack Your Path event -->
+      <div class="film-frame"><img src="photo-exp-hackathon.jpg" alt="Hack Your Path" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>📸<br><strong>photo-exp-hackathon.jpg</strong><br>Hackathon / coding event</div><div class=\'film-label\'>Hack Your Path · Community</div>'"><div class="film-label">Hack Your Path · Community</div></div>
+      <!-- photo-exp-fencing.jpg — Fencing competition or LIU team photo -->
+      <div class="film-frame"><img src="photo-exp-fencing.jpg" alt="NCAA D1 Fencing" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>📸<br><strong>photo-exp-fencing.jpg</strong><br>LIU D1 fencing photo</div><div class=\'film-label\'>NCAA D1 Fencing · LIU Sharks</div>'"><div class="film-label">NCAA D1 Fencing · LIU Sharks</div></div>
+      <!-- photo-exp-usopen.jpg — You at Arthur Ashe / USTA courts -->
+      <div class="film-frame"><img src="photo-exp-usopen.jpg" alt="US Open" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>📸<br><strong>photo-exp-usopen.jpg</strong><br>US Open court photo</div><div class=\'film-label\'>US Open Ball Girl · USTA</div>'"><div class="film-label">US Open Ball Girl · USTA</div></div>
+      <!-- photo-exp-atlascoach.jpg — Coaching or Atlas Lions event -->
+      <div class="film-frame"><img src="photo-exp-atlascoach.jpg" alt="Atlas Lions Fencing" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>📸<br><strong>photo-exp-atlascoach.jpg</strong><br>Atlas Lions / coaching photo</div><div class=\'film-label\'>Atlas Lions Fencing · Founder</div>'"><div class="film-label">Atlas Lions Fencing · Founder</div></div>
     </div>
   </div>
 
@@ -661,12 +673,18 @@ footer{border-top:1px solid var(--border);padding:4rem 3rem;display:grid;grid-te
   <!-- Second filmstrip: athletics photos -->
   <div class="filmstrip-wrap reveal" id="filmstrip2">
     <div class="filmstrip" id="filmstrip2-inner">
-      <div class="film-frame"><div class="film-ph">🤺<br>Fencing action shot</div><div class="film-label">Épée · LIU Sharks · D1</div></div>
-      <div class="film-frame"><div class="film-ph">🤺<br>Add team photo</div><div class="film-label">LIU D1 Women's Fencing Team</div></div>
-      <div class="film-frame"><div class="film-ph">🎾<br>Add US Open photo</div><div class="film-label">US Open Ball Crew · USTA · Flushing</div></div>
-      <div class="film-frame"><div class="film-ph">🤺<br>Add PWF coaching photo</div><div class="film-label">Peter Westbrook Foundation · Volunteer Coach</div></div>
-      <div class="film-frame"><div class="film-ph">🏆<br>Add competition / medal photo</div><div class="film-label">PSAL Championships · Brooklyn</div></div>
-      <div class="film-frame"><div class="film-ph">🤺<br>Add Atlas Lions photo</div><div class="film-label">Atlas Lions Fencing · Founder</div></div>
+      <!-- photo-ath-action.jpg — You in full fencing gear, en garde or mid-bout -->
+      <div class="film-frame"><img src="photo-ath-action.jpg" alt="Fencing action" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>🤺<br><strong>photo-ath-action.jpg</strong><br>Fencing action shot</div><div class=\'film-label\'>Épée · LIU Sharks · D1</div>'"><div class="film-label">Épée · LIU Sharks · D1</div></div>
+      <!-- photo-ath-team.jpg — LIU Women's Fencing team group photo -->
+      <div class="film-frame"><img src="photo-ath-team.jpg" alt="LIU Fencing Team" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>🤺<br><strong>photo-ath-team.jpg</strong><br>LIU team photo</div><div class=\'film-label\'>LIU D1 Women\'s Fencing Team</div>'"><div class="film-label">LIU D1 Women's Fencing Team</div></div>
+      <!-- photo-ath-usopen.jpg — You on court / in uniform at Arthur Ashe -->
+      <div class="film-frame"><img src="photo-ath-usopen.jpg" alt="US Open" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>🎾<br><strong>photo-ath-usopen.jpg</strong><br>US Open photo</div><div class=\'film-label\'>US Open Ball Crew · USTA · Flushing</div>'"><div class="film-label">US Open Ball Crew · USTA · Flushing</div></div>
+      <!-- photo-ath-pwf.jpg — You coaching/volunteering at Peter Westbrook Foundation -->
+      <div class="film-frame"><img src="photo-ath-pwf.jpg" alt="Peter Westbrook Foundation" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>🤺<br><strong>photo-ath-pwf.jpg</strong><br>PWF coaching photo</div><div class=\'film-label\'>Peter Westbrook Foundation · Volunteer Coach</div>'"><div class="film-label">Peter Westbrook Foundation · Volunteer Coach</div></div>
+      <!-- photo-ath-psal.jpg — PSAL competition, medal, or bracket photo -->
+      <div class="film-frame"><img src="photo-ath-psal.jpg" alt="PSAL Championships" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>🏆<br><strong>photo-ath-psal.jpg</strong><br>PSAL / competition photo</div><div class=\'film-label\'>PSAL Championships · Brooklyn</div>'"><div class="film-label">PSAL Championships · Brooklyn</div></div>
+      <!-- photo-ath-atlas.jpg — Atlas Lions Fencing session or event -->
+      <div class="film-frame"><img src="photo-ath-atlas.jpg" alt="Atlas Lions Fencing" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>🤺<br><strong>photo-ath-atlas.jpg</strong><br>Atlas Lions photo</div><div class=\'film-label\'>Atlas Lions Fencing · Founder</div>'"><div class="film-label">Atlas Lions Fencing · Founder</div></div>
     </div>
   </div>
 
@@ -711,11 +729,16 @@ footer{border-top:1px solid var(--border);padding:4rem 3rem;display:grid;grid-te
   <!-- Third filmstrip: community photos -->
   <div class="filmstrip-wrap reveal" id="filmstrip3">
     <div class="filmstrip" id="filmstrip3-inner">
-      <div class="film-frame"><div class="film-ph">👩‍💻<br>Girls Who Code event photo</div><div class="film-label">Girls Who Code · College Loop Leader</div></div>
-      <div class="film-frame"><div class="film-ph">🌍<br>Model UN photo</div><div class="film-label">Model UN · NYHQ · Armenia GA2</div></div>
-      <div class="film-frame"><div class="film-ph">🤝<br>Volunteer coaching photo</div><div class="film-label">Peter Westbrook Foundation · Volunteer</div></div>
-      <div class="film-frame"><div class="film-ph">⚔️<br>Atlas Lions event photo</div><div class="film-label">Atlas Lions Fencing · Founder</div></div>
-      <div class="film-frame"><div class="film-ph">🎓<br>Student gov / SAAC photo</div><div class="film-label">NEC SAAC · VP 2023–25</div></div>
+      <!-- photo-com-gwc.jpg — Girls Who Code event, workshop, or chapter photo -->
+      <div class="film-frame"><img src="photo-com-gwc.jpg" alt="Girls Who Code" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>👩‍💻<br><strong>photo-com-gwc.jpg</strong><br>Girls Who Code event</div><div class=\'film-label\'>Girls Who Code · College Loop Leader</div>'"><div class="film-label">Girls Who Code · College Loop Leader</div></div>
+      <!-- photo-com-mun.jpg — Model UN conference, delegation, or committee photo -->
+      <div class="film-frame"><img src="photo-com-mun.jpg" alt="Model UN" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>🌍<br><strong>photo-com-mun.jpg</strong><br>Model UN photo</div><div class=\'film-label\'>Model UN · NYHQ · Armenia GA2</div>'"><div class="film-label">Model UN · NYHQ · Armenia GA2</div></div>
+      <!-- photo-com-pwf.jpg — Volunteering/coaching at Peter Westbrook Foundation -->
+      <div class="film-frame"><img src="photo-com-pwf.jpg" alt="Peter Westbrook Foundation" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>🤝<br><strong>photo-com-pwf.jpg</strong><br>PWF volunteer photo</div><div class=\'film-label\'>Peter Westbrook Foundation · Volunteer</div>'"><div class="film-label">Peter Westbrook Foundation · Volunteer</div></div>
+      <!-- photo-com-atlas.jpg — Atlas Lions Fencing training session or event -->
+      <div class="film-frame"><img src="photo-com-atlas.jpg" alt="Atlas Lions Fencing" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>⚔️<br><strong>photo-com-atlas.jpg</strong><br>Atlas Lions event</div><div class=\'film-label\'>Atlas Lions Fencing · Founder</div>'"><div class="film-label">Atlas Lions Fencing · Founder</div></div>
+      <!-- photo-com-saac.jpg — Student gov, SAAC meeting, or campus leadership photo -->
+      <div class="film-frame"><img src="photo-com-saac.jpg" alt="NEC SAAC" style="width:100%;height:100%;object-fit:cover" onerror="this.parentElement.innerHTML='<div class=\'film-ph\'>🎓<br><strong>photo-com-saac.jpg</strong><br>Student gov / SAAC photo</div><div class=\'film-label\'>NEC SAAC · VP 2023–25</div>'"><div class="film-label">NEC SAAC · VP 2023–25</div></div>
     </div>
   </div>
 
